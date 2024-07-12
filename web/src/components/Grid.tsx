@@ -9,8 +9,8 @@ function Grid({ grid }: { grid: number[] }) {
     "trap",
     "sword",
     "shield1",
-    "shield2",
-    "shield3",
+    "armour",
+    "helmet",
     "mirror",
   ];
 
