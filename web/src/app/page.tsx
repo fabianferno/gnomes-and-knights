@@ -12,16 +12,8 @@ export default function Home() {
   const account = useAccount();
 
   return (
-    <main className="mx-5 flex min-h-screen flex-col items-center justify-center pb-10">
+    <main className="mx-5 flex min-h-screen flex-col items-center justify-center pb-10 ">
       <div className="relative grid grid-cols-1 container place-items-center">
-        <Image
-          className="relative -mb-3"
-          src="/next.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          priority
-        />
         <div className="text-center mb-5">
           <div className="text-3xl font-bold">
             <span className="flex justify-center items-center">
