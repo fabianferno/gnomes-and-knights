@@ -13,7 +13,7 @@ export default function Home() {
         <CloseButton>Close</CloseButton>
       </div>
       <div className="w-96 h-96">
-        <Grid />
+        <Grid grid={[0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1]} />
       </div>
     </main>
   );
