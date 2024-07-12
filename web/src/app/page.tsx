@@ -17,17 +17,10 @@ export default function Home() {
         <div className="text-center mb-5">
           <div className="text-3xl font-bold">
             <span className="flex justify-center items-center">
-              <img
-                src="https://www.nounskarma.xyz/logo/nouns-logo.svg"
-                alt=""
-                className="h-20 w-20 mr-3"
-              />
-              Gnomes & Knights
+              <Image src="/logo.png" alt="" width={250} height={128} />
             </span>
           </div>
-          <div className="font-bold text-zinc-400 -mt-3">
-            A social strategy game
-          </div>
+          <div className="font-bold text-zinc-400">A social strategy game</div>
         </div>
       </div>
 
