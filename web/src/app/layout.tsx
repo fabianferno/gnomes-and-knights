@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import Providers from "@/components/Providers";
+// import Providers from "@/components/Providers";
+import { Providers } from "@/lib/providers";
+import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
+import { DynamicProvider } from "@/lib/DynamicProvider";
 
 const inter = Patrick_Hand({
   subsets: ["latin"],
@@ -21,11 +24,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <DynamicProvider>
+        <Providers>
+          <DynamicWagmiConnector>
       <body
         className={`${inter.className} bg-[url('/assets/ui/clouds.png')] md:bg-contain backdrop-blur-[1px]`}
       >
-        <Providers>{children}</Providers>
+        {children}  
       </body>
+      </DynamicWagmiConnector>
+        </Providers>
+      </DynamicProvider>
     </html>
   );
 }
