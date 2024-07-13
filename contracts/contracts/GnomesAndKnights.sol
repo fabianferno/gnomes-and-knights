@@ -1,106 +1,235 @@
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.8.0) (token/ERC20/ERC20.sol)
+// SPDX-License-Identifier: BSD-3-Clause-Clear
+pragma solidity >=0.8.13 <0.9.0;
 
-pragma solidity ^0.8.0;
+import "fhevm@v0.3.0/lib/TFHE.sol";
+import "hardhat/console.sol";
 
-import "./IERC20.sol";
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function mint(address to, uint256 amount) external;
+    function balanceOf(address account) external view returns (uint256);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+}
 
 contract GnomesAndKnights {
-  address public owner;
-  uint256 constant BIAS = 2 ** 127;
+    address public owner;
+    uint256 constant BIAS = 2 ** 127;
+    IERC20 public apecoin;
 
-  // TODO: Add mappings
-  mapping(address => Player) public players;
-  uint256 gnomesCount;
-  uint256 knightsCount;
+    uint8 public constant BOARD_SIZE = 4; // max size is 5
+    // TODO: Add mappings
+    mapping(address => Player) public players;
+    uint256 gnomesCount;
+    uint256 knightsCount;
 
-  // TODO: Struct to store all the players and their grids
-  struct Player {
-    address player;
-    uint[4][4] battlegrid;
-    uint16 hits;
-    uint16 heals;
-    uint128 aura;
-    bool isGnome;
-  }
-
-  constructor() {
-    owner = msg.sender;
-  }
-
-  function createProfile(address player) public {
-    // TODO: create a profile
-    Player memory newPlayer;
-    newPlayer.player = player;
-    // TODO: Call randomness function on Pyth to set the grid
-    newPlayer.battlegrid = [
-      [1, 0, 0, 0],
-      [0, 1, 0, 0],
-      [0, 0, 1, 0],
-      [0, 0, 0, 1]
-    ];
-    newPlayer.hits = 5;
-    newPlayer.heals = 2;
-    newPlayer.aura = 1000;
-
-    // TODO: add the player to the list of players
-    players[player] = newPlayer;
-
-    // TODO: Assign the player to Gnome or Knight based on the equivalent number of gnomes and knights
-    if (gnomesCount <= knightsCount) {
-      newPlayer.isGnome = true;
-      gnomesCount++;
-    } else {
-      newPlayer.isGnome = false;
-      knightsCount++;
+    struct Player {
+        address player;
+        uint16 hits;
+        uint16 heals;
+        bool isGnome;
+        string nfc;
+        bytes32 random;
+        euint8[BOARD_SIZE][BOARD_SIZE] grid;
     }
-  }
 
-  function duel(address player1, address player2) public {
-    // TODO: Check if both players are in the list of players
-    require(players[player1].player != address(0), "Player 1 does not exist");
-    require(players[player2].player != address(0), "Player 2 does not exist");
+    // TODO: Define events
+    event Duel(address player1, address player2, address winner);
+    event CreateProfile(address player, string nfc);
+    event UpdateProfile(address player, string nfc);
+    event UpdateGrid(address player, euint8[BOARD_SIZE][BOARD_SIZE] grid);
+    event UpdateHits(address player, uint16 hits);
+    event PlayerHealed(address player, uint16 heals);
 
-    // TODO: Get player grids and do vector product
-    uint[4][4] memory grid1 = players[player1].battlegrid;
-    uint[4][4] memory grid2 = players[player2].battlegrid;
+    modifier onlyPlayers(address player) {
+        require(players[msg.sender].player != address(0), "Player does not exist");
+        require(players[player].player != address(0), "Player does not exist");
+        _;
+    }
 
-    uint[4][4] memory result = mat4Mult(grid1, grid2);
+    constructor(address _apecoin) {
+        owner = msg.sender;
+        apecoin = IERC20(_apecoin);
+    }
 
-    // If matrix product is positive, player 1 wins
-  }
+    function createProfile(address _player, string calldata _nfc) public {
+        require(_player != address(0), "Not a valid address");
 
-  function heal(address player) public {}
+        // create a profile
+        Player memory newPlayer;
+        newPlayer.player = _player;
+        newPlayer.hits = 5;
+        newPlayer.heals = 2;
+        newPlayer.nfc = _nfc;
 
-  // Function to apply the bias to a signed integer
-  function bias(int256 value) internal pure returns (uint256) {
-    return value >= 0 ? uint256(value) + BIAS : uint256(value + int256(BIAS));
-  }
+        // Get a randomness blockhash
+        bytes32 _random = blockhash(block.number);
+        newPlayer.random = _random;
 
-  // Function to remove the bias from a biased value
-  function unbias(uint256 value) internal pure returns (int256) {
-    return value >= BIAS ? int256(value - BIAS) : int256(value) - int256(BIAS);
-  }
-
-  function mat4Mult(
-    uint[4][4] calldata mat1,
-    uint[4][4] calldata mat2
-  ) private pure returns (uint[4][4] memory) {
-    // multiplies 3x3 matrix with 3x3 matrix
-    uint r1 = mat1.length; // rows of mat1
-    uint c1 = mat1[0].length; // columns of mat1
-    uint c2 = mat2[0].length; // columns of mat2
-
-    uint[4][4] memory result;
-
-    for (uint i = 0; i < r1; ++i) {
-      for (uint j = 0; j < c2; ++j) {
-        for (uint k = 0; k < c1; ++k) {
-          result[i][j] += mat1[i][k] * mat2[k][j];
+        // Assign the player to Gnome or Knight based on the equivalent number of gnomes and knights
+        if (gnomesCount <= knightsCount) {
+            newPlayer.isGnome = true;
+            gnomesCount++;
+        } else {
+            newPlayer.isGnome = false;
+            knightsCount++;
         }
-      }
+
+        // TODO: Wrap the recieved Apecoin and return Aura
+        // transfer apecoin to the contract from the player
+        apecoin.transferFrom(_player, address(this), 1000);
+
+        // emit the event
+        emit CreateProfile(_player, _nfc);
+
+        // Generate grid of random numbers for the player with each cell containg a random number between 0 and 12
+        for (uint8 i = 1; i < BOARD_SIZE; i++) {
+            for (uint8 j = 0; j < BOARD_SIZE; j++) {
+                newPlayer.grid[i][j] = TFHE.asEuint8(uint8(_random[i + j]) % 17);
+            }
+        }
+        newPlayer.grid[0][0] = TFHE.asEuint8(0);
+        newPlayer.grid[0][1] = TFHE.asEuint8(0);
+        newPlayer.grid[0][2] = TFHE.asEuint8(0);
+        newPlayer.grid[0][3] = TFHE.asEuint8(0);
+
+        // add the player to the list of players
+        players[_player] = newPlayer;
     }
 
-    return (result);
-  }
+    // Connect with team mate and heal
+    function heal(address player) public onlyPlayers(player) {
+        // Get the player
+        Player storage p = players[player];
+
+        // Check if the player has any heals left
+        require(p.heals > 0, "Player does not have any heals left");
+
+        // Update the player's heals
+        p.heals++;
+
+        // Update the player
+        players[player] = p;
+        emit PlayerHealed(player, p.heals);
+    }
+
+    function duel(address player1, address player2) public onlyPlayers(player1) onlyPlayers(player2) returns (address) {
+        require(players[player1].heals > 0, "Player1 does not have any heals left");
+        require(players[player2].heals > 0, "Player2 does not have any heals left");
+
+        // Get players
+        Player storage p1 = players[player1];
+        Player storage p2 = players[player2];
+
+        // Add two matrices
+        euint8[BOARD_SIZE][BOARD_SIZE] memory result = addTwoMatrices(p1.grid, p2.grid);
+
+        // Find sum of all elements in a matrix
+        euint8 sum = sumOfAllElementsInAMatrix(result);
+
+        // Decrypt the sum
+        uint8 _sum = TFHE.decrypt(sum);
+
+        // Convert the sum to back to a signed integer
+        int256 sumInt = unbias(_sum);
+
+        // Check if the sum is greater than 0
+        if (sumInt > 0) {
+            // Player 1 wins
+            p1.hits++;
+            p2.hits--;
+
+            // Transfer aura from player 2 to player 1
+            apecoin.transferFrom(player2, player1, 100);
+        } else {
+            // Player 2 wins
+            p2.hits++;
+            p1.hits--;
+
+            // Transfer aura from player 1 to player 2
+            apecoin.transferFrom(player1, player2, 100);
+        }
+
+        // Update the states
+        p1.heals--;
+        p2.heals--;
+
+        players[player1] = p1;
+        players[player2] = p2;
+
+        // Emit the event
+        emit Duel(player1, player2, sumInt > 0 ? player1 : player2);
+
+        // Update the hits
+        emit UpdateHits(player1, p1.hits);
+        return sumInt > 0 ? player1 : player2;
+    }
+
+    // Edit the player grid
+    function editGrid(address player, euint8[BOARD_SIZE][BOARD_SIZE] memory grid) public onlyPlayers(player) {
+        // Get the player
+        Player storage p = players[player];
+
+        // Update the player's grid
+        p.grid = grid;
+
+        // Update the player
+        players[player] = p;
+
+        // Emit the event
+        emit UpdateGrid(player, grid);
+    }
+
+    // Transfer heals within the team
+    function transferHeals(address player, uint16 heals) public onlyPlayers(player) {
+        // Get the player
+        Player storage p = players[player];
+
+        // Check if the player has enough heals
+        require(p.heals >= heals, "Player does not have enough heals");
+
+        // Update the player's heals
+        p.heals -= heals;
+
+        // Update the player
+        players[player] = p;
+    }
+
+    function sumOfAllElementsInAMatrix(euint8[BOARD_SIZE][BOARD_SIZE] memory matrix) public pure returns (euint8) {
+        // Find sum of all elements in a matrix
+        euint8[BOARD_SIZE][BOARD_SIZE] memory _matrix;
+        euint8 sum = TFHE.asEuint8(0);
+        for (uint8 i = 0; i < BOARD_SIZE; i++) {
+            for (uint8 j = 0; j < BOARD_SIZE; j++) {
+                sum = TFHE.add(sum, matrix[i][j]);
+            }
+        }
+
+        return sum;
+    }
+
+    function addTwoMatrices(
+        euint8[BOARD_SIZE][BOARD_SIZE] memory a,
+        euint8[BOARD_SIZE][BOARD_SIZE] memory b
+    ) public pure returns (euint8[BOARD_SIZE][BOARD_SIZE] memory) {
+        euint8[BOARD_SIZE][BOARD_SIZE] memory result;
+        for (uint8 i = 0; i < BOARD_SIZE; i++) {
+            for (uint8 j = 0; j < BOARD_SIZE; j++) {
+                result[i][j] = TFHE.add(a[i][j], b[i][j]);
+            }
+        }
+        return result;
+    }
+
+    // Function to apply the bias to a signed integer
+    function bias(int256 value) internal pure returns (uint256) {
+        return value >= 0 ? uint256(value) + BIAS : uint256(value + int256(BIAS));
+    }
+
+    // Function to remove the bias from a biased value
+    function unbias(uint256 value) internal pure returns (int256) {
+        return value >= BIAS ? int256(value - BIAS) : int256(value) - int256(BIAS);
+    }
 }

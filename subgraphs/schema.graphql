@@ -1,21 +1,24 @@
-type ad @entity {
-  "the id of the ad"
-  id: ID!
+type player @entity {
+  "the address of the player"
+  address: Bytes!
 
-  "the owner of the ad"
-  owner: Bytes!
+  "the hits left for the player"
+  hits: BigInt!
 
-  "the metadata of the ad"
-  metadata: String
+  "the heal left for the player"
+  heals: BigInt!
 
-  "the labels of the ad used for personlization in MBD.xyz"
-  labels: [String!]
+  "the player is gnome or knight"
+  isGnome: boolean!
 
-  "the price paid by the user"
-  pricePaid: BigInt
+  "the nfc tag id of the player"
+  nfc: String!
 
-  "the status of the ad creation"
-  errorCode: BigInt
+  "the random bytes for the player"
+  random: Bytes!
+
+  "the player random grid"
+  grid: BigInt[4][4]!
 }
 
 type user @entity {

@@ -1,72 +1,194 @@
-# Fhenix Hardhat Example [![Open in Gitpod][gitpod-badge]][gitpod]
+# Hardhat Template [![Open in Gitpod][gitpod-badge]][gitpod] [![Github Actions][gha-badge]][gha] [![Hardhat][hardhat-badge]][hardhat] [![License: MIT][license-badge]][license]
 
-[gitpod]: https://gitpod.io/#https://github.com/fhenixprotocol/fhenix-hardhat-example
+[gitpod]: https://gitpod.io/#https://github.com/inco-fhevm/fhevm-hardhat-template
 [gitpod-badge]: https://img.shields.io/badge/Gitpod-Open%20in%20Gitpod-FFB45B?logo=gitpod
+[gha]: https://github.com/inco-fhevm/fhevm-hardhat-template/actions
+[gha-badge]: https://github.com/inco-fhevm/fhevm-hardhat-template/actions/workflows/ci.yml/badge.svg
+[hardhat]: https://hardhat.org/
+[hardhat-badge]: https://img.shields.io/badge/Built%20with-Hardhat-FFDB1C.svg
+[license]: https://opensource.org/licenses/MIT
+[license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
 
-This repository contains a sample project that you can use as the starting point
-for your Fhenix project. It's also a great fit for learning the basics of
-Fhenix smart contract development.
+A Hardhat-based template for developing Solidity smart contracts, with sensible defaults.
 
-This project is intended to be used with the
-[Fhenix Hardhat Beginners Tutorial](TODO), but you should be
-able to follow it by yourself by reading the README and exploring its
-`contracts`, `tests`, `deploy` and `tasks` directories.
+- [Hardhat](https://github.com/nomiclabs/hardhat): compile, run and test smart contracts
+- [TypeChain](https://github.com/ethereum-ts/TypeChain): generate TypeScript bindings for smart contracts
+- [Ethers](https://github.com/ethers-io/ethers.js/): renowned Ethereum library and wallet implementation
+- [Solhint](https://github.com/protofire/solhint): code linter
+- [Solcover](https://github.com/sc-forks/solidity-coverage): code coverage
+- [Prettier Plugin Solidity](https://github.com/prettier-solidity/prettier-plugin-solidity): code formatter
 
-It comes with two fhenix-specific hardhat plugins:
+## Getting Started
 
-- `fhenix-hardhat-plugin`: The main plugin for fhenix development in hardhat. It injects `fhenixjs` into the hardhat runtime environment, which allows you to interact with encrypted data in your tests and tasks.
-- `fhenix-hardhat-docker`: A plugin that allows you to run a local Fhenix testnet in a docker container. This is useful for testing your contracts in a sandbox before deploying them on a testnet or on mainnet.
+Click the [`Use this template`](https://github.com/inco-fhevm/fhevm-hardhat-template/generate) button at the top of the
+page to create a new repository with this repo as the initial state.
 
-## Quick start
+## Features
 
-The first things you need to do are cloning this repository and installing its dependencies:
+This template builds upon the frameworks and libraries mentioned above, so for details about their specific features,
+please consult their respective documentations.
 
-```sh
-git clone https://github.com/FhenixProtocol/fhenix-hardhat-example.git
-cd fhenix-hardhat-example
-pnpm install
+For example, for Hardhat, you can refer to the [Hardhat Tutorial](https://hardhat.org/tutorial) and the
+[Hardhat Docs](https://hardhat.org/docs). You might be in particular interested in reading the
+[Testing Contracts](https://hardhat.org/tutorial/testing-contracts) section.
+
+### Sensible Defaults
+
+This template comes with sensible default configurations in the following files:
+
+```text
+├── .editorconfig
+├── .eslintignore
+├── .eslintrc.yml
+├── .gitignore
+├── .prettierignore
+├── .prettierrc.yml
+├── .solcover.js
+├── .solhint.json
+└── hardhat.config.ts
 ```
 
-Next, you need an .env file containing your mnemonics or keys. You can use .env.example that comes with a predefined mnemonic, or use your own
+### VSCode Integration
+
+This template is IDE agnostic, but for the best user experience, you may want to use it in VSCode alongside Nomic
+Foundation's [Solidity extension](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity).
+
+### GitHub Actions
+
+This template comes with GitHub Actions pre-configured. Your contracts will be linted and tested on every push and pull
+request made to the `main` branch.
+
+Note though that to make this work, you must use your `INFURA_API_KEY` and your `MNEMONIC` as GitHub secrets.
+
+You can edit the CI script in [.github/workflows/ci.yml](./.github/workflows/ci.yml).
+
+## Usage
+
+### Pre Requisites
+
+Install [pnpm](https://pnpm.io/installation)
+
+Before being able to run any command, you need to create a `.env` file and set a BIP-39 compatible mnemonic as an
+environment variable. If you don't already have a mnemonic, you can use this [website](https://iancoleman.io/bip39/) to
+generate one. You can run the following command to use the example .env:
 
 ```sh
 cp .env.example .env
 ```
 
-Once the file exists, let's run a LocalFhenix instance:
+Then, proceed with installing dependencies:
 
 ```sh
-pnpm localfhenix:start
+pnpm install
 ```
 
-This will start a LocalFhenix instance in a docker container. If this worked you should see a `Started LocalFhenix successfully` message in your console.
+### Compile
 
-If not, please make sure you have `docker` installed and running on your machine. You can find instructions on how to install docker [here](https://docs.docker.com/get-docker/).
-
-Now that we have a LocalFhenix instance running, we can deploy our contracts to it:
+Compile the smart contracts with Hardhat:
 
 ```sh
-npx hardhat deploy
+npx hardhat compile --network inco
 ```
 
-Note that this template defaults to use the `localfhenix` network, which is injected into the hardhat configuration.
+### TypeChain
 
-Finally, we can run the tasks with:
+Compile the smart contracts and generate TypeChain bindings:
 
 ```sh
-pnpm task:getCount # => 0
-pnpm task:addCount
-pnpm task:getCount # => 1
-pnpm task:addCount --amount 5
-pnpm task:getCount # => 6
+pnpm typechain
 ```
 
-## Troubleshooting
+### Deploy
 
-If Localfhenix doesn't start this could indicate an error with docker. Please verify that docker is running correctly using the `docker run hello-world` command, which should run a basic container and verify that everything is plugged in.
+Deploy the ERC20 to Inco Gentry Testnet Network:
 
-For example, if the docker service is installed but not running, it might indicate you need to need to start it manually.
+```sh
+npx hardhat deploy --network inco
+```
 
-## More Info
+#### Mint
 
-To learn more about the Fhenix Hardhat plugin, check out the [Fhenix Hardhat Plugin Repository](https://github.com/FhenixProtocol/fhenix-hardhat-plugin).
+Run the `mint` task on the Inco Gentry Testnet Network:
+
+```sh
+npx hardhat task:mint --mint [AMOUNT] --account [alice|bob|carol|dave] --network inco
+```
+
+(For more control over the deployment process, you can rewrite the deployment script (deploy.ts) and use the command
+`npx hardhat run scripts/deploy.ts --network inco` to deploy your contracts.)
+
+### Test
+
+Run the tests with Hardhat:
+
+```sh
+npx hardhat test --network inco
+```
+
+### Lint Solidity
+
+Lint the Solidity code:
+
+```sh
+pnpm lint:sol
+```
+
+### Lint TypeScript
+
+Lint the TypeScript code:
+
+```sh
+pnpm lint:ts
+```
+
+### Coverage
+
+Generate the code coverage report:
+
+```sh
+pnpm coverage
+```
+
+### Report Gas
+
+See the gas usage per unit test and average gas per method call:
+
+```sh
+REPORT_GAS=true pnpm test
+```
+
+### Clean
+
+Delete the smart contract artifacts, the coverage reports and the Hardhat cache:
+
+```sh
+pnpm clean
+```
+
+### Tasks
+
+#### Deploy EncryptedERC20
+
+Deploy a new instance of the EncryptedERC20 contract via a task:
+
+```sh
+pnpm task:deployERC20
+```
+
+## Tips
+
+### Syntax Highlighting
+
+If you use VSCode, you can get Solidity syntax highlighting with the
+[hardhat-solidity](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity) extension.
+
+## Using GitPod
+
+[GitPod](https://www.gitpod.io/) is an open-source developer platform for remote development.
+
+To view the coverage report generated by `pnpm coverage`, just click `Go Live` from the status bar to turn the server
+on/off.
+
+## License
+
+This project is licensed under MIT.
