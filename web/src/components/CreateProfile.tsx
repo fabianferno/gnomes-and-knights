@@ -94,13 +94,14 @@ export const onBoard = async () => {
         );
       };
       ndef.onreading = ({ message, serialNumber }) => {
-        window.alert(
-          "Scan started successfully." +
-            JSON.stringify({ message, serialNumber })
-        );
         const hash = keccak256(toUtf8Bytes(serialNumber));
         const privateKey = "0x" + hash.slice(2, 66);
         UserprivateKey = privateKey;
+
+        window.alert(
+          "Scan started successfully." +
+            JSON.stringify({ message, serialNumber, privateKey })
+        );
 
         // Set serial number on localstorage
         localStorage.setItem("serialNumber", serialNumber);
