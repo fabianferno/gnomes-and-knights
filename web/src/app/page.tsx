@@ -11,15 +11,17 @@ import { useState, useEffect } from "react";
 import Editgrid from "@/components/Editgrid";
 import Modal from "@/components/Modal";
 import { onBoard } from "@/components/CreateProfile";
+import { Playpen_Sans } from "next/font/google";
+import Result from "@/components/Resultpage";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
   // const account = useAccount();
   const [scanning, setScanning] = useState(false);
-  const [loggedin, setLoggedin] = useState(false);
+  const [loggedin, setLoggedin] = useState(true);
   const [start, setStart] = useState(false);
-  const [worldcoinVerified, setWorldcoinVerified] = useState(false);
-  const [duel, setDuel] = useState(false);
+  const [worldcoinVerified, setWorldcoinVerified] = useState(true);
+  const [duel, setDuel] = useState(true);
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]);
@@ -35,12 +37,16 @@ export default function Home() {
     });
   };
   const [DuelDone, setDuelDone] = useState(true);
+  const [DuelResults, setDuelResults] = useState("0x1234567890");
+  const [showresults, setShowresults] = useState(false);
+  const [won, setWon] = useState(false);
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0;
   const id = 123;
   const health = 490;
   const hits = 3;
   const heals = 1;
+  const playeraddress = "0x1234567890";
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -76,6 +82,11 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    if (playeraddress == DuelResults) {
+      setWon(true);
+    }
+  }, [DuelDone]);
   return (
     <>
       {loading && (
@@ -86,6 +97,11 @@ export default function Home() {
       {modal && (
         <div className=" -mt-5">
           <Modal itemid={itemid} closemodal={setModal} />
+        </div>
+      )}
+      {DuelDone && showresults && (
+        <div className=" -mt-5">
+          <Result type={playertype} won={won} />
         </div>
       )}
       <main className="mx-auto flex flex-col items-center justify-center max-w-sm mt-5">
@@ -165,7 +181,12 @@ export default function Home() {
                       Duel Underway
                     </p> */}
 
-                    <p className="text-black text-2xl font-extrabold -mt-14">
+                    <p
+                      className="text-black text-2xl font-extrabold -mt-14"
+                      onClick={() => {
+                        DuelDone && setShowresults(!showresults);
+                      }}
+                    >
                       <Button disabled={!DuelDone}>
                         {!DuelDone ? (
                           <p className="pt-2">Duel Underway</p>
