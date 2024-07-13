@@ -1,3 +1,4 @@
+"use client";
 import { privateKeyToAccount } from "viem/accounts";
 import { keccak256, toUtf8Bytes } from "ethers";
 const ScanId = async ({

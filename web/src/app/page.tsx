@@ -15,20 +15,20 @@ import Dialog from "@/components/Dialog";
 import scanId from "@/components/ScanId";
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
-  const [loggedin, setLoggedin] = useState(false); //once wallet is created
-  const [start, setStart] = useState(false); //starts the nfc scanner
-  const [worldcoinVerified, setWorldcoinVerified] = useState(false); //should be set to true once worldcoin verification is done
+  const [loggedin, setLoggedin] = useState(true); //once wallet is created
+  const [start, setStart] = useState(true); //starts the nfc scanner
+  const [worldcoinVerified, setWorldcoinVerified] = useState(true); //should be set to true once worldcoin verification is done
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]); //grid items
   const [modal, setModal] = useState(false); //item edit modal open close
   const [itemid, setItemid] = useState(6); //item to be edited
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
-  const [duel, setDuel] = useState(true); //for duel page
-  const [DuelDone, setDuelDone] = useState(true); //should be ture once the result is received
+  const [duel, setDuel] = useState(false); //for duel page
+  const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
   const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
-  const [healingConfirmation, sethealingConfirmation] = useState(true); // triggers heal modal
+  const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
   const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
