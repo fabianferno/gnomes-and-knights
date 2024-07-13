@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
 import Loader from "@/components/Loader";
 import { useState } from "react";
+import Faucet from "@/components/CreateProfile";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
@@ -156,6 +157,7 @@ export default function Home() {
             )}
           </div>
         </section>
+        <Faucet address="0x76050f043A864114EaFAeCC35BE4AD8dBe8FeA9B" />
       </main>
     </>
   );

@@ -5,9 +5,9 @@ import CloseButton from "@/components/CloseButton";
 import Grid from "@/components/Grid";
 import Image from "next/image";
 import WorldCoinConnect from "@/components/WorldCoin";
-// import { ConnectButton } from "@rainbow-me/rainbowkit";
-// import { useAccount } from "wagmi";
+
 import { Wallet, keccak256, toUtf8Bytes } from "ethers";
+import DynamicLogin from "@/components/Dynamic/Login";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
