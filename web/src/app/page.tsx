@@ -17,6 +17,7 @@ export default function Home() {
   // const account = useAccount();
   const [scanning, setScanning] = useState(false);
   const [loggedin, setLoggedin] = useState(false);
+  const [start, setStart] = useState(false);
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [duel, setDuel] = useState(false);
   const [tactics, setTactics] = useState([
@@ -25,6 +26,7 @@ export default function Home() {
   const [modal, setModal] = useState(false);
   const [itemid, setItemid] = useState(6);
   const [editTactics, setEditTactics] = useState(false);
+  const [generated, setGenerated] = useState(false);
   const updateTactic = (index: number, value: number) => {
     setTactics((prevTactics) => {
       const newTactics = [...prevTactics];
@@ -43,15 +45,21 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      if (scanning) {
+      if (start) {
         console.log("Scanning NFC");
         window.alert(`Scanning NFC: ${scanning}`);
         onBoard().then(() => {
-          setScanning(false);
+          setStart(false);
         });
       }
     })();
-  }, [scanning]);
+  }, [start]);
+
+  useEffect(() => {
+    if (localStorage.getItem("serialNumber") !== null && scanning) {
+      setLoading(false);
+    }
+  }, []);
 
   return (
     <>
@@ -96,7 +104,7 @@ export default function Home() {
                 </div>
               </div>
               <div
-                onClick={async () => {
+                onClick={() => {
                   setScanning(true);
                 }}
               >
@@ -290,7 +298,10 @@ export default function Home() {
                       height={80}
                       className=" mt-80 ml-48 absolute z-20 scale-x-[-1]"
                     />
-                    <div className="flex flex-col gap-5 z-20  ml-20 mt-80 pt-28  absolute justify-center items-center">
+                    <div
+                      className="flex flex-col gap-5 z-20  ml-20 mt-80 pt-28  absolute justify-center items-center"
+                      onClick={() => setStart(!start)}
+                    >
                       <Button disabled={false}>
                         <p className="  text-4xl text-black  font-bold  ">
                           {" "}
