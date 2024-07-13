@@ -15,6 +15,7 @@ export default function Home() {
   // const { primaryWallet } = useDynamicContext();
   const account = useAccount();
   const [scanning, setScanning] = useState(false);
+  const [loggedin, setLoggedin] = useState(false);
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0;
   const id = 123;
@@ -26,7 +27,7 @@ export default function Home() {
     <>
       {loading && <Loader type={playertype} />}
       <main className="mx-auto flex flex-col items-center justify-center max-w-sm mt-5">
-        {account.isConnected && (
+        {loggedin && (
           <div className="relative grid grid-cols-1 container place-items-center">
             <div className="text-center mb-5">
               <div className="text-3xl font-bold">
@@ -42,7 +43,7 @@ export default function Home() {
         )}
 
         {!scanning ? (
-          !account.isConnected ? (
+          !loggedin ? (
             <div className="flex justify-center items-center flex-col h-screen">
               <div className="relative grid grid-cols-1 container place-items-center">
                 <div className="text-center mb-1">
