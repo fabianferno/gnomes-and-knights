@@ -2,7 +2,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-const CloseButton = ({ children }: { children: React.ReactNode }) => {
+const CloseButton = () => {
   const [hovering, setHovering] = React.useState(false);
   return (
     <button
