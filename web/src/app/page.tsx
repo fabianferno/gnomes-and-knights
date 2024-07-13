@@ -26,8 +26,9 @@ export default function Home() {
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
   const [duel, setDuel] = useState(false); //for duel page
   const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
-  const [DuelConfirmation, setDuelConfirmation] = useState(true); //triggers duel modal
+  const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
+  const [Duelsign, setDuelsign] = useState(true); //triggers duel sign modal
   const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
@@ -97,6 +98,20 @@ export default function Home() {
           <Result type={playertype} won={won} />
         </div>
       )}
+      {Duelsign && (
+        <div className=" -mt-5">
+          <Dialog
+            close={setDuelConfirmation}
+            type={playertype}
+            opponentaddress={opponentaddress}
+            gif={"attack1"}
+            yes={(opponentaddress: string) => {}}
+            hidden={true}
+          >
+            Tap NFC Tag to Sign Transaction
+          </Dialog>
+        </div>
+      )}
       {DuelConfirmation && (
         <div className=" -mt-5">
           <Dialog
@@ -104,7 +119,9 @@ export default function Home() {
             type={playertype}
             opponentaddress={opponentaddress}
             gif={"attack2"}
-            yes={(opponentaddress: string) => {}}
+            yes={(opponentaddress: string) => {
+              setDuelsign(true);
+            }}
           >
             Do You want to Duel with {opponentaddress.slice(0, 6)}...
             {opponentaddress.slice(-6)}?
