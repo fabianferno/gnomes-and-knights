@@ -18,7 +18,7 @@ export default function Home() {
   const [loggedin, setLoggedin] = useState(true);
   const [worldcoinVerified, setWorldcoinVerified] = useState(true);
   const [tactics, setTactics] = useState([
-    0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1,
+    0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]);
   const [modal, setModal] = useState(true);
   const [itemid, setItemid] = useState(6);
