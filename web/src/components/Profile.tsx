@@ -13,9 +13,9 @@ function Profile() {
           className="inset-0 z-0 scale-125"
         />
       </div>
-      <div className="w-24 h-24">
+      <div className="">
         <p className="">Gnome #1234</p>
-        <Healthbar healthprop={90} />
+        <Healthbar healthprop={908} />
       </div>
     </div>
   );

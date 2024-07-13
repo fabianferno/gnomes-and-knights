@@ -4,12 +4,12 @@ import Image from "next/image";
 
 function Healthbar({ healthprop }: { healthprop: number }) {
   const [health, setHealth] = useState(75);
-  const healths = [0, 25, 35, 45, 55, 75, 100];
+  const healths = [0, 250, 350, 450, 550, 750, 1000];
 
   useEffect(() => {
     for (let i = 0; i < healths.length; i++) {
-      if (healthprop < 25) {
-        setHealth(25);
+      if (healthprop < 250) {
+        setHealth(250);
       } else if (healthprop >= healths[i]) {
         setHealth(healths[i]);
       }
@@ -17,13 +17,22 @@ function Healthbar({ healthprop }: { healthprop: number }) {
   }, [healthprop]); // This effect will run whenever healthprop changes
 
   return (
-    <div>
-      <Image
-        src={`/assets/healthbar/${health}.png`}
-        alt="healthbar"
-        width={100}
-        height={100}
-      />
+    <div className="flex justify-between items-center">
+      <p>Aura</p>
+      <div className="flex flex-col justify-end items-end w-full">
+        <p className="text-[12px] -mb-3 text-slate-300 -ml-1">
+          {healthprop}/1000
+        </p>
+        <div className="ml-1">
+          <Image
+            src={`/assets/healthbar/${health}.png`}
+            className="ml-3"
+            alt="healthbar"
+            width={100}
+            height={100}
+          />
+        </div>
+      </div>
     </div>
   );
 }
