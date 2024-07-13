@@ -77,7 +77,6 @@ contract GnomesAndKnights {
             knightsCount++;
         }
 
-        // TODO: Wrap the recieved Apecoin and return Aura
         // transfer apecoin to the contract from the player
         apecoin.transferFrom(_player, address(this), 1000);
 

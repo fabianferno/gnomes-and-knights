@@ -51,11 +51,6 @@ export const ABI = [
     inputs: [
       {
         internalType: "address",
-        name: "player1",
-        type: "address",
-      },
-      {
-        internalType: "address",
         name: "player2",
         type: "address",
       },
