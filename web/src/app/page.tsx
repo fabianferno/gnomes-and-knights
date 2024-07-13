@@ -5,9 +5,12 @@ import WorldCoinConnect from "@/components/WorldCoin";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import Profile from "@/components/Profile";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Home() {
-  const { primaryWallet } = useDynamicContext();
+  // const { primaryWallet } = useDynamicContext();
+  const account = useAccount();
 
   return (
     <main className="mx-auto flex flex-col items-center justify-center max-w-sm">
@@ -24,18 +27,17 @@ export default function Home() {
 
       <section className="w-sm">
         <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
-          {!primaryWallet ? (
+          {!account ? (
             <div className="flex justify-center items-center flex-col">
               <h3 className="text-md mb-5">
                 Connect your wallet to get started
               </h3>
-              <DynamicWidget />
+              {/* <DynamicWidget /> */} <ConnectButton />
             </div>
           ) : (
             <div className="flex justify-between items-start flex-col ">
               <div className="flex w-full  items-center">
-                <DynamicWidget />
-
+                {/* <DynamicWidget /> */} <ConnectButton />
                 <div className="-mt-10 ml-2">
                   <WorldCoinConnect />
                 </div>
