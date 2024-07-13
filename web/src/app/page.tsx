@@ -120,7 +120,8 @@ export default function Home() {
             gif={"idle"}
             yes={(opponentaddress: string) => {}}
           >
-            Do You want to heal {opponentaddress}?
+            Do You want to heal {opponentaddress.slice(0, 6)}...
+            {opponentaddress.slice(-6)}?
           </Dialog>
         </div>
       )}
@@ -243,32 +244,51 @@ export default function Home() {
                           <Editgrid grid={tactics} setgrid={setTactics} />
                         )}
                       </div>
-                      <div className="flex justify-center items-center relative">
-                        <div
-                          onClick={async () => {
-                            setLoading(!loading);
-                            await scanId({ setOpponentaddress }).then(() => {
-                              setDuelConfirmation(true);
-                              setLoading(false);
-                            });
-                          }}
-                        >
-                          <Button2>
-                            <p className="text-lg font-semibold pt-0.5">
-                              Start Duel
-                            </p>
-                          </Button2>
+                      <div className="flex flex-col justify-center items-center">
+                        <div className="flex justify-center items-center relative">
+                          <div
+                            onClick={async () => {
+                              setLoading(!loading);
+                              await scanId({ setOpponentaddress }).then(() => {
+                                setDuelConfirmation(true);
+                                setLoading(false);
+                              });
+                            }}
+                          >
+                            <Button2>
+                              <p className="text-lg font-semibold pt-0.5">
+                                Start Duel
+                              </p>
+                            </Button2>
+                          </div>
+                          <div
+                            onClick={() => {
+                              setEditTactics(!editTactics);
+                            }}
+                          >
+                            <Button disabled={false}>
+                              <p className="text-lg font-semibold pt-0.5">
+                                {!editTactics ? "Edit Tactics" : "Save Tactics"}
+                              </p>
+                            </Button>
+                          </div>
                         </div>
-                        <div
-                          onClick={() => {
-                            setEditTactics(!editTactics);
-                          }}
-                        >
-                          <Button disabled={false}>
-                            <p className="text-lg font-semibold pt-0.5">
-                              {!editTactics ? "Edit Tactics" : "Save Tactics"}
-                            </p>
-                          </Button>
+                        <div className="flex justify-center items-center relative">
+                          <div
+                            onClick={async () => {
+                              setLoading(!loading);
+                              await scanId({ setOpponentaddress }).then(() => {
+                                sethealingConfirmation(true);
+                                setLoading(false);
+                              });
+                            }}
+                          >
+                            <Button2 disabled={false}>
+                              <p className="text-lg font-semibold pt-0.5">
+                                Heal Ally
+                              </p>
+                            </Button2>
+                          </div>
                         </div>
                       </div>
                     </main>
