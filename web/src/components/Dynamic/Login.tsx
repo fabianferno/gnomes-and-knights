@@ -27,9 +27,6 @@ const creatingAccountUsingNFC = () => {
 
         console.log("WalletAddress: ", wallet.address);
         console.log(wallet.privateKey);
-        // console.log(serialNumber);
-        // console.log("NDEF message read.");
-        // console.log(false);
       };
     })
     .catch((error) => {
@@ -37,12 +34,10 @@ const creatingAccountUsingNFC = () => {
     });
 };
 
-
-export default function DynamicLogin() {
-    return (
-        <div>
-            <button onClick={creatingAccountUsingNFC}>Scan NFC</button>
-        </div>
-    )
-
+export default function NFCLogin() {
+  return (
+    <div>
+      <button onClick={creatingAccountUsingNFC}>Scan NFC</button>
+    </div>
+  );
 }
