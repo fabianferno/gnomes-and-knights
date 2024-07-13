@@ -75,7 +75,13 @@ import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 import { Wallet, keccak256, toUtf8Bytes } from "ethers";
 
-export const onBoard = async () => {
+export const onBoard = async ({
+  setLoggedin,
+  setStart,
+}: {
+  setLoggedin: React.Dispatch<React.SetStateAction<boolean>>;
+  setStart: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   console.log("Scanning NFC");
   let address = "0x";
   let UserprivateKey = undefined;
@@ -112,6 +118,12 @@ export const onBoard = async () => {
         address = wallet.address;
 
         console.log(wallet.privateKey);
+        localStorage.setItem("publicKey", wallet.address);
+
+        // Call the setter
+
+        setStart(false);
+        setLoggedin(true);
       };
     })
     .catch((error) => {
