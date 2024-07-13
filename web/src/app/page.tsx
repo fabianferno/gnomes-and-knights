@@ -101,7 +101,7 @@ export default function Home() {
                 }}
               >
                 <Button disabled={false}>
-                  <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
+                  <p className="text-lg font-semibold pt-0.5">Lets Go!</p>
                 </Button>
               </div>
             </div>
@@ -290,19 +290,21 @@ export default function Home() {
                       height={80}
                       className=" mt-80 ml-48 absolute z-20 scale-x-[-1]"
                     />
-                    <div className="flex flex-col gap-5 z-20  ml-24 mt-80 pt-28  absolute justify-center items-center">
-                      <p className="  text-4xl text-black  font-bold  ">
-                        {" "}
-                        Scanning NFC
-                      </p>
-                      <div className="">
+                    <div className="flex flex-col gap-5 z-20  ml-20 mt-80 pt-28  absolute justify-center items-center">
+                      <Button disabled={false}>
+                        <p className="  text-4xl text-black  font-bold  ">
+                          {" "}
+                          Scan NFC
+                        </p>
+                      </Button>
+                      {/* <div className="">
                         <Image
                           src="/assets/ui/nfcloading.gif"
                           alt=""
                           width={80}
                           height={80}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
