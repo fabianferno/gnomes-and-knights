@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 function Healthbar({ healthprop }: { healthprop: number }) {
-  const [health, setHealth] = useState(75);
+  const [health, setHealth] = useState(750);
   const healths = [0, 250, 350, 450, 550, 750, 1000];
 
   useEffect(() => {

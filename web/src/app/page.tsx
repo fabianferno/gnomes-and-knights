@@ -18,6 +18,7 @@ export default function Home() {
   const [scanning, setScanning] = useState(false);
   const [loggedin, setLoggedin] = useState(true);
   const [worldcoinVerified, setWorldcoinVerified] = useState(true);
+  const [duel, setDuel] = useState(true);
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]);
@@ -31,6 +32,7 @@ export default function Home() {
       return newTactics;
     });
   };
+  const [DuelDone, setDuelDone] = useState(true);
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0;
   const id = 123;
@@ -78,7 +80,6 @@ export default function Home() {
             </div>
           </div>
         )}
-
         {!scanning ? (
           !loggedin ? (
             <div className="flex justify-center items-center flex-col h-screen">
@@ -99,64 +100,114 @@ export default function Home() {
                   setScanning(true);
                 }}
               >
-                <Button>
+                <Button disabled={false}>
                   <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
                 </Button>
               </div>
             </div>
           ) : worldcoinVerified ? (
-            <section className="w-sm justify-center items-center flex flex-col">
-              <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
-                <div className="flex justify-between items-start flex-col ">
-                  <main className="flex flex-col items-center justify-center h-fit">
-                    <div className="pt-2 w-full px-12">
-                      <Profile
-                        type={playertype}
-                        id={id}
-                        health={health}
-                        hits={hits}
-                        heals={heals}
-                      />
-                    </div>
-                    <div className="w-96 ">
-                      {!editTactics ? (
-                        <Grid
-                          grid={tactics}
-                          triggermodal={setModal}
-                          itemid={setItemid}
+            duel ? (
+              <>
+                <section className="w-sm justify-center items-center flex flex-col">
+                  <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[url('/assets/ui/tile322.png')] bg-opacity-75">
+                    <div className="flex justify-between items-start flex-col ">
+                      <main className="flex flex-col items-center justify-center h-fit">
+                        <Image
+                          src="/assets/warrior/attack2.gif"
+                          alt=""
+                          width={300}
+                          height={300}
+                          className="-mb-16"
                         />
-                      ) : (
-                        <Editgrid grid={tactics} setgrid={setTactics} />
-                      )}
+                        <Image
+                          src="/assets/gnome/attack3.gif"
+                          alt=""
+                          width={300}
+                          height={300}
+                          className="-mt-16"
+                        />
+                      </main>
                     </div>
-                    <div className="flex justify-center items-center relative">
-                      <div
-                        onClick={() => {
-                          setLoading(!loading);
-                        }}
-                      >
-                        <Button2>
-                          <p className="text-lg font-semibold pt-0.5">
-                            Start Duel
-                          </p>
-                        </Button2>
+                  </div>
+                  <Image
+                    src="/assets/ui/sword.gif"
+                    alt=""
+                    key={1}
+                    width={200}
+                    height={200}
+                    className="mt-2 rounded-full"
+                  />
+                  <div className="flex text-center flex-col justify-center items-center  p-2 mt-3 rounded-md ">
+                    {/* <p className="text-black text-2xl font-semibold">
+                      Duel Underway
+                    </p> */}
+
+                    <p className="text-black text-2xl font-extrabold -mt-14">
+                      <Button disabled={!DuelDone}>
+                        {!DuelDone ? (
+                          <p className="pt-2">Duel Underway</p>
+                        ) : (
+                          <p className="pt-2">View Results</p>
+                        )}
+                      </Button>
+                    </p>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <section className="w-sm justify-center items-center flex flex-col">
+                <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
+                  <div className="flex justify-between items-start flex-col ">
+                    <main className="flex flex-col items-center justify-center h-fit">
+                      <div className="pt-2 w-full px-12">
+                        <Profile
+                          type={playertype}
+                          id={id}
+                          health={health}
+                          hits={hits}
+                          heals={heals}
+                        />
                       </div>
-                      <div
-                        onClick={() => {
-                          setEditTactics(!editTactics);
-                        }}
-                      >
-                        <Button>
-                          <p className="text-lg font-semibold pt-0.5">
-                            {!editTactics ? "Edit Tactics" : "Save Tactics"}
-                          </p>
-                        </Button>
+                      <div className="w-96 ">
+                        {!editTactics ? (
+                          <Grid
+                            grid={tactics}
+                            triggermodal={setModal}
+                            itemid={setItemid}
+                          />
+                        ) : (
+                          <Editgrid grid={tactics} setgrid={setTactics} />
+                        )}
                       </div>
-                    </div>
-                  </main>
+                      <div className="flex justify-center items-center relative">
+                        <div
+                          onClick={() => {
+                            setLoading(!loading);
+                          }}
+                        >
+                          <Button2>
+                            <p className="text-lg font-semibold pt-0.5">
+                              Start Duel
+                            </p>
+                          </Button2>
+                        </div>
+                        <div
+                          onClick={() => {
+                            setEditTactics(!editTactics);
+                          }}
+                        >
+                          <Button disabled={false}>
+                            <p className="text-lg font-semibold pt-0.5">
+                              {!editTactics ? "Edit Tactics" : "Save Tactics"}
+                            </p>
+                          </Button>
+                        </div>
+                      </div>
+                    </main>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )
           ) : (
             <div className="flex justify-center items-center flex-col h-screen">
               <div className="relative grid grid-cols-1 container place-items-center">
@@ -172,7 +223,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="">
-                <Button>
+                <Button disabled={false}>
                   <WorldCoinConnect />
                 </Button>
               </div>
