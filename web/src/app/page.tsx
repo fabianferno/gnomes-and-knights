@@ -3,7 +3,7 @@ import Grid from "@/components/Grid";
 import Image from "next/image";
 import WorldCoinConnect from "@/components/WorldCoin";
 import Profile from "@/components/Profile";
-import { useAccount } from "wagmi";
+// import { useAccount } from "wagmi";
 import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
 import Loader from "@/components/Loader";
@@ -13,14 +13,14 @@ import Modal from "@/components/Modal";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
-  const account = useAccount();
+  // const account = useAccount();
   const [scanning, setScanning] = useState(false);
   const [loggedin, setLoggedin] = useState(true);
   const [worldcoinVerified, setWorldcoinVerified] = useState(true);
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]);
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const [itemid, setItemid] = useState(6);
   const [editTactics, setEditTactics] = useState(false);
   const updateTactic = (index: number, value: number) => {
