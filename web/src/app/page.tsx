@@ -25,9 +25,9 @@ export default function Home() {
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
   const [duel, setDuel] = useState(true); //for duel page
   const [DuelDone, setDuelDone] = useState(true); //should be ture once the result is received
-  const [DuelConfirmation, setDuelConfirmation] = useState(true); //triggers duel modal
+  const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
-  const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
+  const [healingConfirmation, sethealingConfirmation] = useState(true); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
   const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
@@ -103,8 +103,22 @@ export default function Home() {
             type={playertype}
             opponentaddress={opponentaddress}
             gif={"attack2"}
+            yes={(opponentaddress: string) => {}}
           >
             Do You want to Duel with {opponentaddress}?
+          </Dialog>
+        </div>
+      )}
+      {healingConfirmation && (
+        <div className=" -mt-5">
+          <Dialog
+            close={sethealingConfirmation}
+            type={playertype}
+            opponentaddress={opponentaddress}
+            gif={"idle"}
+            yes={(opponentaddress: string) => {}}
+          >
+            Do You want to heal {opponentaddress}?
           </Dialog>
         </div>
       )}

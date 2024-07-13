@@ -8,12 +8,14 @@ function Dialog({
   opponentaddress,
   type,
   gif,
+  yes,
 }: {
   children: React.ReactNode;
   close: React.Dispatch<React.SetStateAction<boolean>>;
   type: number;
   opponentaddress: string;
   gif: string;
+  yes: (opponentaddress: string) => void;
 }) {
   return (
     <div className="h-screen w-screen absolute z-10 flex justify-center items-center flex-col backdrop-blur-sm text-black">
@@ -33,9 +35,15 @@ function Dialog({
           </div>
         </div>
         <div className="flex ml-6">
-          <Button disabled={false}>
-            <div className="text-3xl p-4 mb-2 -mt-5">Yes</div>
-          </Button>
+          <div
+            onClick={() => {
+              yes(opponentaddress);
+            }}
+          >
+            <Button disabled={false}>
+              <div className="text-3xl p-4 mb-2 -mt-5">Yes</div>
+            </Button>
+          </div>
           <div
             onClick={() => {
               close(false);
