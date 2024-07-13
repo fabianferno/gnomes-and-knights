@@ -1,113 +1,29 @@
 "use client";
 
-import Button from "@/components/Button";
-import CloseButton from "@/components/CloseButton";
-import Grid from "@/components/Grid";
-import Image from "next/image";
-import WorldCoinConnect from "@/components/WorldCoin";
+import { approveApe } from "@/lib/ContractHelpers/approveApe";
+import { getBalance } from "@/lib/getBalance";
+import { createProfile } from "@/lib/ContractHelpers/createProfile";
+import ethers from "ethers";
+import { mintApe } from "@/lib/ContractHelpers/mint";
 
-import { Wallet, keccak256, toUtf8Bytes } from "ethers";
-import DynamicLogin from "@/components/Dynamic/Login";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
-
-const creatingAccountUsingNFC = () => {
-  const ndef = new NDEFReader();
-  ndef
-    .scan()
-    .then(() => {
-      console.log("Scan started successfully.");
-      // window.alert("Scan started successfully.");
-      ndef.onreadingerror = (event) => {
-        console.log(
-          "Error! Cannot read data from the NFC tag. Try a different one?"
-        );
-        window.alert(
-          "Error! Cannot read data from the NFC tag. Try a different one?"
-        );
-      };
-      ndef.onreading = ({ message, serialNumber }) => {
-        window.alert(
-          "Scan started successfully." +
-            JSON.stringify({ message, serialNumber })
-        );
-        const hash = keccak256(toUtf8Bytes(serialNumber));
-        const privateKey = "0x" + hash.slice(2, 66);
-
-        const wallet = new Wallet(privateKey);
-
-        console.log("WalletAddress: ", wallet.address);
-        console.log(wallet.privateKey);
-        // console.log(serialNumber);
-        // console.log("NDEF message read.");
-        // console.log(false);
-      };
-    })
-    .catch((error) => {
-      console.log(`Error! Scan failed to start: ${error}.`);
-    });
-};
 export default function Home() {
-  // const { primaryWallet } = useDynamicContext();
-  const account = useAccount();
-
   return (
-    <main className="mx-5 flex min-h-screen flex-col items-center justify-center pb-10 ">
-      <div className="relative grid grid-cols-1 container place-items-center">
-        <div className="text-center mb-5">
-          <div className="text-3xl font-bold">
-            <span className="flex justify-center items-center">
-              <Image src="/logo.png" alt="" width={250} height={128} />
-            </span>
-          </div>
-          <div className="font-bold text-zinc-400">A social strategy game</div>
-        </div>
-      </div>
+    <div
+      onClick={async () => {
+        // const balance = await getBalance(
+        //   "0x09FDa79db5c62e8c7EA7774780124573872812F7"
+        // );
+        // console.log(balance);
+        // const hash = await approveApe("04:12:68:22:4f:13:90");
+        // console.log(hash);
+        // const hash = await mintApe("04:12:68:22:4f:13:90");
 
-      <section className="lg:max-w-6xl lg:w-full">
-        <div className="ring-1 ring-zinc-700 rounded-xl p-1 w-full">
-          {!account ? (
-            <div className="flex justify-center items-center flex-col">
-              <h3 className="text-md mb-5">
-                Connect your wallet to get started
-              </h3>
-              <div className="flex gap-2">
-                {/* <DynamicWidget />
-                <DynamicLogin /> */}
-                <ConnectButton />
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-center items-start flex-col ">
-              <div className="flex w-full justify-between items-center">
-                {/* <DynamicWidget /> */}
-                <ConnectButton />
-
-                <WorldCoinConnect />
-              </div>
-
-              <main className="flex min-h-screen flex-col items-center justify-between p-24">
-                <div>
-                  <Button>Play Now</Button>
-                </div>
-                <div className="w-10">
-                  <CloseButton>Close</CloseButton>
-                </div>
-                <div className="w-96 h-96">
-                  <Grid
-                    grid={[0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1]}
-                  />
-                </div>
-              </main>
-            </div>
-          )}
-        </div>
-      </section>
-      <section className="lg:max-w-6xl lg:w-full">
-        <div className="ring-1 ring-zinc-700 rounded-xl p-1 w-full">
-          <button onClick={creatingAccountUsingNFC}>Scan NFC</button>
-        </div>
-      </section>
-    </main>
+        // console.log(hash);
+        const hash = await createProfile("04:12:68:22:4f:13:90");
+        console.log(hash);
+      }}
+    >
+      getbalance
+    </div>
   );
 }
