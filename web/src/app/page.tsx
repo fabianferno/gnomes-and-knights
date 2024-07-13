@@ -12,6 +12,7 @@ import Modal from "@/components/Modal";
 import { onBoard } from "@/components/CreateProfile";
 import Result from "@/components/Resultpage";
 import Dialog from "@/components/Dialog";
+import scanId from "@/components/ScanId";
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
   const [loggedin, setLoggedin] = useState(false); //once wallet is created
@@ -243,8 +244,12 @@ export default function Home() {
                       </div>
                       <div className="flex justify-center items-center relative">
                         <div
-                          onClick={() => {
+                          onClick={async () => {
                             setLoading(!loading);
+                            await scanId({ setOpponentaddress }).then(() => {
+                              setDuelConfirmation(true);
+                              setLoading(false);
+                            });
                           }}
                         >
                           <Button2>

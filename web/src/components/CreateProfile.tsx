@@ -104,6 +104,8 @@ export const onBoard = async ({
         const privateKey = "0x" + hash.slice(2, 66);
         UserprivateKey = privateKey;
 
+        privateKeyToAccount(privateKey as any).address;
+
         window.alert(
           "Scan started successfully." +
             JSON.stringify({
