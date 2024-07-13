@@ -26,33 +26,45 @@ export default function Home() {
     <>
       {loading && <Loader type={playertype} />}
       <main className="mx-auto flex flex-col items-center justify-center max-w-sm mt-5">
-        <div className="relative grid grid-cols-1 container place-items-center">
-          <div className="text-center mb-5">
-            <div className="text-3xl font-bold">
-              <span className="flex justify-center items-center">
-                <Image src="/logo.png" alt="" width={250} height={128} />
-              </span>
-            </div>
-            <div className="font-bold text-zinc-900">
-              A social strategy game
+        {account.isConnected && (
+          <div className="relative grid grid-cols-1 container place-items-center">
+            <div className="text-center mb-5">
+              <div className="text-3xl font-bold">
+                <span className="flex justify-center items-center">
+                  <Image src="/logo.png" alt="" width={250} height={128} />
+                </span>
+              </div>
+              <div className="font-bold text-zinc-900">
+                A social strategy game
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <section className="w-sm justify-center items-center flex flex-col">
-          <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
-            {!scanning ? (
-              !account ? (
-                <div className="flex justify-center items-center flex-col">
-                  <h3 className="text-md mb-5">
-                    Connect your wallet to get started
-                  </h3>
-                  {/* <DynamicWidget /> */} <ConnectButton />
+        {!scanning ? (
+          !account.isConnected ? (
+            <div className="flex justify-center items-center flex-col h-screen">
+              <div className="relative grid grid-cols-1 container place-items-center">
+                <div className="text-center mb-1">
+                  <div className="text-3xl font-bold">
+                    <span className="flex justify-center items-center">
+                      <Image src="/logo.png" alt="" width={350} height={179} />
+                    </span>
+                  </div>
+                  <div className="font-bold text-zinc-900">
+                    A social strategy game
+                  </div>
                 </div>
-              ) : (
+              </div>
+              <Button>
+                <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
+              </Button>
+            </div>
+          ) : (
+            <section className="w-sm justify-center items-center flex flex-col">
+              <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
                 <div className="flex justify-between items-start flex-col ">
                   <div className="flex w-full  items-center justify-between">
-                    {/* <DynamicWidget /> */}
                     <div className="pb-5">
                       {" "}
                       <ConnectButton />
@@ -91,8 +103,12 @@ export default function Home() {
                     </div>
                   </main>
                 </div>
-              )
-            ) : (
+              </div>
+            </section>
+          )
+        ) : (
+          <section className="w-sm justify-center items-center flex flex-col">
+            <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
               <div className="flex justify-between items-start flex-col ">
                 <div className="flex w-full  items-center justify-between">
                   <Image
@@ -154,9 +170,10 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
+
         <Faucet address="0x76050f043A864114EaFAeCC35BE4AD8dBe8FeA9B" />
       </main>
     </>

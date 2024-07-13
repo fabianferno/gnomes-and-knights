@@ -21,9 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} bg-[url('/assets/ui/clouds.png')] md:bg-contain backdrop-blur-[1px]`}
-      >
+      <body className={`${inter.className} bg-[url('/assets/ui/clouds.png')]`}>
         <Providers>{children}</Providers>
       </body>
     </html>
