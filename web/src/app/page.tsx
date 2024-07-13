@@ -11,6 +11,7 @@ import Editgrid from "@/components/Editgrid";
 import Modal from "@/components/Modal";
 import { onBoard } from "@/components/CreateProfile";
 import Result from "@/components/Resultpage";
+import Dialog from "@/components/Dialog";
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
   const [loggedin, setLoggedin] = useState(false); //once wallet is created
@@ -26,9 +27,10 @@ export default function Home() {
   const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
   const [DuelConfirmation, setDuelConfirmation] = useState(false); //yes or no for duel
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
-  const [healingConfirmation, sethealingConfirmation] = useState(false); // yes or no for healing
+  const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
+  const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0; //o for gnome 1 for warrior
   const id = 123; //id of the player
@@ -36,6 +38,7 @@ export default function Home() {
   const hits = 3; //hits
   const heals = 1; //heals
   const playeraddress = "0x1234567890"; //player address
+
   const [loading, setLoading] = useState(false); //triggers loader at any point
 
   useEffect(() => {
@@ -91,6 +94,18 @@ export default function Home() {
       {DuelDone && showresults && (
         <div className=" -mt-5">
           <Result type={playertype} won={won} />
+        </div>
+      )}
+      {DuelConfirmation && (
+        <div className=" -mt-5">
+          <Dialog
+            close={setDuelConfirmation}
+            type={playertype}
+            opponentaddress={opponentaddress}
+            gif={"attack2"}
+          >
+            Do You want to Duel with {opponentaddress}?
+          </Dialog>
         </div>
       )}
       <main className="mx-auto flex flex-col items-center justify-center max-w-sm mt-5">
