@@ -15,7 +15,7 @@ function Grid({ grid }: { grid: number[] }) {
   ];
 
   return (
-    <div className="grid p-5 grid-rows-4 grid-flow-col gap-1 bg-[url('/assets/ui/gridbg.png')] bg-cover bg-no-repeat relative w-full h-full">
+    <div className="grid p-5 grid-rows-4 grid-flow-col gap-1 bg-[url('/assets/ui/gridbg.png')] bg-cover bg-no-repeat relative w-full h-96">
       {grid.map((item, index) => (
         <div
           key={index}
