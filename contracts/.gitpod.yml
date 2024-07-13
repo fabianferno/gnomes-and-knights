@@ -1,7 +1,7 @@
-image: "gitpod/workspace-node-lts:latest"
+image: "gitpod/workspace-node:latest"
 
 tasks:
-  - init: "pnpm install && pnpm hardhat localfhenix:start"
+  - init: "pnpm install"
 
 vscode:
   extensions:
