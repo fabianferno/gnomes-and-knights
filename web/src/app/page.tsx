@@ -283,7 +283,7 @@ export default function Home() {
                               });
                             }}
                           >
-                            <Button2 disabled={false}>
+                            <Button2>
                               <p className="text-lg font-semibold pt-0.5">
                                 Heal Ally
                               </p>
