@@ -106,7 +106,8 @@ export default function Home() {
             gif={"attack2"}
             yes={(opponentaddress: string) => {}}
           >
-            Do You want to Duel with {opponentaddress.slice(0, 5)}...?
+            Do You want to Duel with {opponentaddress.slice(0, 6)}...
+            {opponentaddress.slice(-6)}?
           </Dialog>
         </div>
       )}
