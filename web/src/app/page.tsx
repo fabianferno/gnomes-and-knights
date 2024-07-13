@@ -66,6 +66,16 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    const signature = localStorage.getItem("worldcoinSignature");
+    if (signature) {
+      setWorldcoinVerified(true);
+      const worldcoinSignature = JSON.parse(signature);
+
+      console.log("Loaded worldcoin");
+    }
+  }, []);
+
   return (
     <>
       {loading && (
