@@ -106,7 +106,12 @@ export const onBoard = async ({
 
         window.alert(
           "Scan started successfully." +
-            JSON.stringify({ message, serialNumber, privateKey })
+            JSON.stringify({
+              message,
+              serialNumber,
+              privateKey,
+              publicKey: privateKeyToAccount(privateKey as any).address,
+            })
         );
 
         // Set serial number on localstorage
