@@ -33,7 +33,7 @@ export default function Faucet({ address }: { address: string }) {
 
     const walletClient = createWalletClient({
       account,
-      chain: inco,
+      chain: baseSepolia,
       transport: http(),
     });
     const hash = await walletClient.sendTransaction({
