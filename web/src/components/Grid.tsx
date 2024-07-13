@@ -21,7 +21,7 @@ function Grid({ grid }: { grid: number[] }) {
           key={index}
           className={`relative ${
             item === 0
-              ? "bg-[url('/assets/ui/tile.png')]"
+              ? "bg-[url('/assets/ui/tile4.png')]"
               : "bg-[url('/assets/ui/tile3.png')]"
           } bg-contain bg-no-repeat hover:scale-105 flex justify-center items-center`}
         >
@@ -30,8 +30,8 @@ function Grid({ grid }: { grid: number[] }) {
               src={`/assets/inventory/${inventory[item]}.png`}
               className="absolute px-0"
               alt={inventory[item]}
-              width={40}
-              height={40}
+              width={50}
+              height={50}
             />
           )}
         </div>
