@@ -26,7 +26,7 @@ export default function Home() {
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
   const [duel, setDuel] = useState(false); //for duel page
   const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
-  const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
+  const [DuelConfirmation, setDuelConfirmation] = useState(true); //triggers duel modal
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
   const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
@@ -106,7 +106,7 @@ export default function Home() {
             gif={"attack2"}
             yes={(opponentaddress: string) => {}}
           >
-            Do You want to Duel with {opponentaddress}?
+            Do You want to Duel with {opponentaddress.slice(0, 5)}...?
           </Dialog>
         </div>
       )}
