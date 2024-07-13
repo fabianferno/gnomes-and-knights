@@ -13,7 +13,7 @@ const fundWalletIfEmpty = async (wallet: string, chain: string = "inco") => {
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
     const tx = await signer.sendTransaction({
       to: wallet,
-      value: ethers.parseEther("0.01"),
+      value: ethers.parseEther("0.05"),
     });
     const txs = await tx.wait();
     console.log("Funded wallet", wallet);

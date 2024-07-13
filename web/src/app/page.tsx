@@ -14,9 +14,9 @@ import Result from "@/components/Resultpage";
 import Dialog from "@/components/Dialog";
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
-  const [loggedin, setLoggedin] = useState(true); //once wallet is created
+  const [loggedin, setLoggedin] = useState(false); //once wallet is created
   const [start, setStart] = useState(false); //starts the nfc scanner
-  const [worldcoinVerified, setWorldcoinVerified] = useState(true); //should be set to true once worldcoin verification is done
+  const [worldcoinVerified, setWorldcoinVerified] = useState(false); //should be set to true once worldcoin verification is done
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
   ]); //grid items
@@ -199,7 +199,7 @@ export default function Home() {
                       Duel Underway
                     </p> */}
 
-                    <p
+                    <div
                       className="text-black text-2xl font-extrabold -mt-14"
                       onClick={() => {
                         DuelDone && setShowresults(!showresults);
@@ -212,7 +212,7 @@ export default function Home() {
                           <p className="pt-2">View Results</p>
                         )}
                       </Button>
-                    </p>
+                    </div>
                   </div>
                 </section>
               </>
