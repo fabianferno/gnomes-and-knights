@@ -3,20 +3,34 @@ import Grid from "@/components/Grid";
 import Image from "next/image";
 import WorldCoinConnect from "@/components/WorldCoin";
 import Profile from "@/components/Profile";
-import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+// import { useAccount } from "wagmi";
 import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
 import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
+import Editgrid from "@/components/Editgrid";
+import Modal from "@/components/Modal";
 import { onBoard } from "@/components/CreateProfile";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
-  const account = useAccount();
+  // const account = useAccount();
   const [scanning, setScanning] = useState(false);
-  const [loggedin, setLoggedin] = useState(false);
-  const [worldcoinVerified, setWorldcoinVerified] = useState(false);
+  const [loggedin, setLoggedin] = useState(true);
+  const [worldcoinVerified, setWorldcoinVerified] = useState(true);
+  const [tactics, setTactics] = useState([
+    0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
+  ]);
+  const [modal, setModal] = useState(false);
+  const [itemid, setItemid] = useState(6);
+  const [editTactics, setEditTactics] = useState(false);
+  const updateTactic = (index: number, value: number) => {
+    setTactics((prevTactics) => {
+      const newTactics = [...prevTactics];
+      newTactics[index] = value;
+      return newTactics;
+    });
+  };
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0;
   const id = 123;
@@ -39,7 +53,16 @@ export default function Home() {
 
   return (
     <>
-      {loading && <Loader type={playertype} />}
+      {loading && (
+        <div className=" -mt-5">
+          <Loader type={playertype} />
+        </div>
+      )}
+      {modal && (
+        <div className=" -mt-5">
+          <Modal itemid={itemid} closemodal={setModal} />
+        </div>
+      )}
       <main className="mx-auto flex flex-col items-center justify-center max-w-sm mt-5">
         {loggedin && worldcoinVerified && (
           <div className="relative grid grid-cols-1 container place-items-center">
@@ -85,12 +108,6 @@ export default function Home() {
             <section className="w-sm justify-center items-center flex flex-col">
               <div className="ring-1 ring-zinc-700 rounded-xl p-1 mx-auto w-full bg-[#47ABA9] bg-opacity-75">
                 <div className="flex justify-between items-start flex-col ">
-                  {/* <div className="flex w-full  items-center justify-between">
-                    <div className="pb-5">
-                      {" "}
-                      <ConnectButton />
-                    </div>
-                  </div> */}
                   <main className="flex flex-col items-center justify-center h-fit">
                     <div className="pt-2 w-full px-12">
                       <Profile
@@ -101,21 +118,40 @@ export default function Home() {
                         heals={heals}
                       />
                     </div>
-
                     <div className="w-96 ">
-                      <Grid
-                        grid={[0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1]}
-                      />
+                      {!editTactics ? (
+                        <Grid
+                          grid={tactics}
+                          triggermodal={setModal}
+                          itemid={setItemid}
+                        />
+                      ) : (
+                        <Editgrid grid={tactics} setgrid={setTactics} />
+                      )}
                     </div>
                     <div className="flex justify-center items-center relative">
-                      <Button2>
-                        <p className="text-lg font-semibold pt-0.5">
-                          Start Duel
-                        </p>
-                      </Button2>
-                      <Button>
-                        <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
-                      </Button>
+                      <div
+                        onClick={() => {
+                          setLoading(!loading);
+                        }}
+                      >
+                        <Button2>
+                          <p className="text-lg font-semibold pt-0.5">
+                            Start Duel
+                          </p>
+                        </Button2>
+                      </div>
+                      <div
+                        onClick={() => {
+                          setEditTactics(!editTactics);
+                        }}
+                      >
+                        <Button>
+                          <p className="text-lg font-semibold pt-0.5">
+                            {!editTactics ? "Edit Tactics" : "Save Tactics"}
+                          </p>
+                        </Button>
+                      </div>
                     </div>
                   </main>
                 </div>
