@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
+import Button from "./Button";
 
 export default function WorldCoinConnect() {
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
@@ -75,12 +76,14 @@ export default function WorldCoinConnect() {
           verification_level={VerificationLevel.Device}
         >
           {({ open }) => (
-            <div
-              className="font-bold text-xs text-zinc-600 cursor-pointer"
-              onClick={open}
-            >
-              Verify with World ID
-            </div>
+            <Button>
+              <div
+                className="font-bold text-lg text-zinc-600 cursor-pointer"
+                onClick={open}
+              >
+                World ID
+              </div>
+            </Button>
           )}
         </IDKitWidget>
       ) : (

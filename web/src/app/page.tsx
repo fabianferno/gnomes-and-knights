@@ -32,11 +32,13 @@ export default function Home() {
               <DynamicWidget />
             </div>
           ) : (
-            <div className="flex justify-center items-start flex-col ">
-              <div className="flex w-full justify-between items-center">
+            <div className="flex justify-between items-start flex-col ">
+              <div className="flex w-full  items-center">
                 <DynamicWidget />
 
-                <WorldCoinConnect />
+                <div className="-mt-10 ml-2">
+                  <WorldCoinConnect />
+                </div>
               </div>
               <main className="flex flex-col items-center justify-center ">
                 <div className="pt-2 w-full px-12">
