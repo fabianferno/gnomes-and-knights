@@ -4,19 +4,29 @@ import Image from "next/image";
 import WorldCoinConnect from "@/components/WorldCoin";
 import Profile from "@/components/Profile";
 import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
 import Loader from "@/components/Loader";
 import { useState } from "react";
-import Faucet from "@/components/CreateProfile";
+import Editgrid from "@/components/Editgrid";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
   const account = useAccount();
   const [scanning, setScanning] = useState(false);
-  const [loggedin, setLoggedin] = useState(false);
-  const [worldcoinVerified, setWorldcoinVerified] = useState(false);
+  const [loggedin, setLoggedin] = useState(true);
+  const [worldcoinVerified, setWorldcoinVerified] = useState(true);
+  const [tactics, setTactics] = useState([
+    0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1,
+  ]);
+  const [editTactics, setEditTactics] = useState(false);
+  const updateTactic = (index: number, value: number) => {
+    setTactics((prevTactics) => {
+      const newTactics = [...prevTactics];
+      newTactics[index] = value;
+      return newTactics;
+    });
+  };
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0;
   const id = 123;
@@ -86,9 +96,11 @@ export default function Home() {
                     </div>
 
                     <div className="w-96 ">
-                      <Grid
-                        grid={[0, 1, 5, 0, 3, 2, 1, 5, 6, 7, 0, 7, 5, 2, 0, 1]}
-                      />
+                      {!editTactics ? (
+                        <Grid grid={tactics} />
+                      ) : (
+                        <Editgrid grid={tactics} setgrid={setTactics} />
+                      )}
                     </div>
                     <div className="flex justify-center items-center relative">
                       <Button2>
@@ -96,9 +108,17 @@ export default function Home() {
                           Start Duel
                         </p>
                       </Button2>
-                      <Button>
-                        <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
-                      </Button>
+                      <div
+                        onClick={() => {
+                          setEditTactics(!editTactics);
+                        }}
+                      >
+                        <Button>
+                          <p className="text-lg font-semibold pt-0.5">
+                            {!editTactics ? "Edit Tactics" : "Save Tactics"}
+                          </p>
+                        </Button>
+                      </div>
                     </div>
                   </main>
                 </div>
