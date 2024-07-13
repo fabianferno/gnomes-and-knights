@@ -39,8 +39,9 @@ export default function Home() {
                 <WorldCoinConnect />
               </div>
               <main className="flex flex-col items-center justify-center ">
-                <div className="pt-2">
-                  <Profile />
+                <div className="pt-2 w-full px-12">
+                  {/*Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2*/}
+                  <Profile type={0} id={123} health={490} hits={3} heals={1} />
                 </div>
                 <div className="w-96 h-96">
                   <Grid

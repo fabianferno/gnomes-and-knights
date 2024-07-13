@@ -20,10 +20,10 @@ function Healthbar({ healthprop }: { healthprop: number }) {
     <div className="flex justify-between items-center">
       <p>Aura</p>
       <div className="flex flex-col justify-end items-end w-full">
-        <p className="text-[12px] -mb-3 text-slate-300 -ml-1">
+        <p className="text-[10px] -mb-1 text-slate-600 -ml-3 mr-2">
           {healthprop}/1000
         </p>
-        <div className="ml-1">
+        <div className="ml-1 -mt-2">
           <Image
             src={`/assets/healthbar/${health}.png`}
             className="ml-3"
