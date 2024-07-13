@@ -5,11 +5,11 @@ import CloseButton from "@/components/CloseButton";
 import Grid from "@/components/Grid";
 import Image from "next/image";
 import WorldCoinConnect from "@/components/WorldCoin";
-// import { ConnectButton } from "@rainbow-me/rainbowkit";
-// import { useAccount } from "wagmi";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+
 import { Wallet, keccak256, toUtf8Bytes } from "ethers";
+import DynamicLogin from "@/components/Dynamic/Login";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 const creatingAccountUsingNFC = () => {
   const ndef = new NDEFReader();
@@ -48,7 +48,8 @@ const creatingAccountUsingNFC = () => {
     });
 };
 export default function Home() {
-  const { primaryWallet } = useDynamicContext();
+  // const { primaryWallet } = useDynamicContext();
+  const account = useAccount();
 
   return (
     <main className="mx-5 flex min-h-screen flex-col items-center justify-center pb-10 ">
@@ -65,35 +66,22 @@ export default function Home() {
 
       <section className="lg:max-w-6xl lg:w-full">
         <div className="ring-1 ring-zinc-700 rounded-xl p-1 w-full">
-          {!primaryWallet ? (
+          {!account ? (
             <div className="flex justify-center items-center flex-col">
               <h3 className="text-md mb-5">
                 Connect your wallet to get started
               </h3>
               <div className="flex gap-2">
-                <DynamicWidget />
-                {/* <div onClick={()=>{
-                  console.log("clicked")
-                  const serialNumber = "8928971"; // Coming from the NFC
-                    // Generate private key from serial number (hashing for demonstration purposes)
-                  const hash = keccak256(toUtf8Bytes(serialNumber));
-                  const privateKey = "0x" + hash.slice(2, 66);
-
-                  const wallet = new Wallet(privateKey);
-
-
-                   console.log("WalletAddress: ", wallet.address);
-  console.log(wallet.privateKey);
-                }}>
-                <Button>Connect via NFC</Button>
-
-                </div> */}
+                {/* <DynamicWidget />
+                <DynamicLogin /> */}
+                <ConnectButton />
               </div>
             </div>
           ) : (
             <div className="flex justify-center items-start flex-col ">
               <div className="flex w-full justify-between items-center">
-                <DynamicWidget />
+                {/* <DynamicWidget /> */}
+                <ConnectButton />
 
                 <WorldCoinConnect />
               </div>

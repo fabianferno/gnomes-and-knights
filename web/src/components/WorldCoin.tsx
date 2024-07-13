@@ -76,14 +76,12 @@ export default function WorldCoinConnect() {
           verification_level={VerificationLevel.Device}
         >
           {({ open }) => (
-            <Button>
-              <div
-                className="font-bold text-lg text-zinc-600 cursor-pointer"
-                onClick={open}
-              >
-                World ID
-              </div>
-            </Button>
+            <div
+              className="font-bold text-lg text-zinc-600 cursor-pointer"
+              onClick={open}
+            >
+              World ID
+            </div>
           )}
         </IDKitWidget>
       ) : (

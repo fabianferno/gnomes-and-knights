@@ -4,11 +4,11 @@ import {
   RainbowKitProvider,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, Config } from "wagmi";
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
-import { sepolia, baseSepolia } from "wagmi/chains";
+import { sepolia, mantle, mantaTestnet, baseSepolia } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { type Chain } from "viem";
 
@@ -29,10 +29,10 @@ export const mantleSepolia = {
 
 const queryClient = new QueryClient();
 
-const config = getDefaultConfig({
-  appName: "Connekt",
+const config: Config = getDefaultConfig({
+  appName: "Some App",
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID || "",
-  chains: [sepolia, mantleSepolia],
+  chains: [baseSepolia, mantleSepolia, mantaTestnet],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 
@@ -42,15 +42,15 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={config as any}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
-            accentColor: "#111111",
+            accentColor: "#8BBEC0",
             accentColorForeground: "white",
-            borderRadius: "medium",
-            fontStack: "system",
+            borderRadius: "large",
             overlayBlur: "small",
+            fontStack: "rounded",
           })}
         >
           <ThemeProvider
