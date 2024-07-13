@@ -16,7 +16,7 @@ export default function Home() {
   // const { primaryWallet } = useDynamicContext();
   // const account = useAccount();
   const [scanning, setScanning] = useState(false);
-  const [loggedin, setLoggedin] = useState(true);
+  const [loggedin, setLoggedin] = useState(false);
   const [start, setStart] = useState(false);
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [duel, setDuel] = useState(false);
