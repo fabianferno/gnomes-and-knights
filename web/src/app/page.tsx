@@ -60,6 +60,17 @@ export default function Home() {
       setLoggedin(true);
     }
   }, []);
+
+  useEffect(() => {
+    const signature = localStorage.getItem("worldcoinSignature");
+    if (signature) {
+      setWorldcoinVerified(true);
+      const worldcoinSignature = JSON.parse(signature);
+
+      console.log("Loaded worldcoin");
+    }
+  }, []);
+
   useEffect(() => {
     if (playeraddress == DuelResults) {
       setWon(true);

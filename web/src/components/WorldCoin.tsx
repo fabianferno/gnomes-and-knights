@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 import Button from "./Button";
+import axios from "axios";
 
 export default function WorldCoinConnect() {
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
@@ -50,6 +51,8 @@ export default function WorldCoinConnect() {
     }
 
     const signedMessage = await response.json();
+
+    // Store the signed message in the localStorage
     localStorage.setItem(
       "worldcoinSignature",
       JSON.stringify({
@@ -57,11 +60,21 @@ export default function WorldCoinConnect() {
         signature: signedMessage,
       })
     );
+
+    // Fund the user's wallet
+    const responseFund = await axios.post("/api/fund", {
+      wallet: localStorage.getItem("publicKey") || "",
+    });
+
+    if (!responseFund.data.funded) {
+      window.alert("Error funding wallet");
+    }
   };
 
   const onSuccess = async (proof: any) => {
     // Sign the verified nullifier hash and store in the localStorage
     await handleSign(proof.nullifier_hash);
+
     setWorldcoinId(proof);
   };
 
@@ -86,11 +99,7 @@ export default function WorldCoinConnect() {
         </IDKitWidget>
       ) : (
         <div className="text-right mt-1 mr-1">
-          <span
-            className="text-xs bg-zinc-400 text-white px-2 py-1 rounded-full
-          
-           "
-          >
+          <span className="text-xs bg-zinc-400 text-white px-2 py-1 rounded-full">
             Worldcoin ✅
           </span>
           <p className="text-zinc-600 text-xs mt-2 text-right">
