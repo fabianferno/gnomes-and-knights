@@ -16,7 +16,7 @@ export default function Home() {
   // const { primaryWallet } = useDynamicContext();
   // const account = useAccount();
   const [scanning, setScanning] = useState(false);
-  const [loggedin, setLoggedin] = useState(false);
+  const [loggedin, setLoggedin] = useState(true);
   const [start, setStart] = useState(false);
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [duel, setDuel] = useState(false);
@@ -46,18 +46,23 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       if (start) {
+        setScanning(false);
         console.log("Scanning NFC");
-        window.alert(`Scanning NFC: ${scanning}`);
-        onBoard().then(() => {
-          setStart(false);
-        });
+        // window.alert(Scanning NFC: ${start});
+        // onBoard().then(() => {
+        //   setLoggedin(true);
+        // });
+        await onBoard({ setLoggedin, setStart });
       }
     })();
   }, [start]);
 
   useEffect(() => {
-    if (localStorage.getItem("serialNumber") !== null && scanning) {
-      setLoading(false);
+    if (localStorage.getItem("serialNumber") !== null && start) {
+      setStart(false);
+
+      // setScanning(false);
+      setLoggedin(true);
     }
   }, []);
 
@@ -300,7 +305,7 @@ export default function Home() {
                     />
                     <div
                       className="flex flex-col gap-5 z-20  ml-20 mt-80 pt-28  absolute justify-center items-center"
-                      onClick={() => setStart(!start)}
+                      onClick={() => setStart(true)}
                     >
                       <Button disabled={false}>
                         <p className="  text-4xl text-black  font-bold  ">
@@ -324,6 +329,7 @@ export default function Home() {
           </>
         )}
       </main>
+          
     </>
   );
 }
