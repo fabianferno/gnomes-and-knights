@@ -8,8 +8,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
 import Loader from "@/components/Loader";
-import { useState } from "react";
-import Faucet from "@/components/CreateProfile";
+import { useState, useEffect } from "react";
+import { onBoard } from "@/components/CreateProfile";
 
 export default function Home() {
   // const { primaryWallet } = useDynamicContext();
@@ -24,6 +24,19 @@ export default function Home() {
   const hits = 3;
   const heals = 1;
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (scanning) {
+        console.log("Scanning NFC");
+        window.alert(`Scanning NFC: ${scanning}`);
+        onBoard().then(() => {
+          setScanning(false);
+        });
+      }
+    })();
+  }, [scanning]);
+
   return (
     <>
       {loading && <Loader type={playertype} />}
@@ -58,7 +71,11 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div onClick={() => setScanning(!scanning)}>
+              <div
+                onClick={async () => {
+                  setScanning(true);
+                }}
+              >
                 <Button>
                   <p className="text-lg font-semibold pt-0.5">Scan NFC</p>
                 </Button>
@@ -206,8 +223,6 @@ export default function Home() {
             </section>
           </>
         )}
-
-        {/* <Faucet address="0x76050f043A864114EaFAeCC35BE4AD8dBe8FeA9B" /> */}
       </main>
     </>
   );
