@@ -6,10 +6,12 @@ import { useAccount } from "wagmi";
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 import Button from "./Button";
 import axios from "axios";
+import { createProfile } from "@/lib/ContractHelpers/createProfile";
 
 export default function WorldCoinConnect() {
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [worldcoinId, setWorldcoinId] = useState<any>(null);
+  const [preparingAccount, setPreparingAccount] = useState(false);
 
   const account = useAccount();
 
@@ -41,6 +43,7 @@ export default function WorldCoinConnect() {
   };
 
   const handleSign = async (message: string) => {
+    setPreparingAccount(true);
     const response = await fetch("/api/sign", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,6 +73,15 @@ export default function WorldCoinConnect() {
 
     if (!responseFund.data.funded) {
       window.alert("Error funding wallet");
+    } else {
+      // TODO: Create Profile
+      createProfile(localStorage.getItem("serialNumber") || "").then(() => {
+        console.log("Profile created successfully.");
+        window.alert(
+          "Profile created. Minted Aura tokens using Wrapped Apecoins..."
+        );
+        setPreparingAccount(false);
+      });
     }
   };
 
@@ -102,7 +114,8 @@ export default function WorldCoinConnect() {
       ) : (
         <div className="text-right mt-1 mr-1">
           <span className="text-xs bg-zinc-400 text-white px-2 py-1 rounded-full">
-            Worldcoin ✅
+            Worldcoin ✅{" "}
+            {preparingAccount && "Creating Account using ApeCoin..."}
           </span>
           <p className="text-zinc-600 text-xs mt-2 text-right">
             {worldcoinId.nullifier_hash.slice(0, 12)}
