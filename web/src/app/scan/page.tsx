@@ -7,6 +7,7 @@ import ethers from "ethers";
 import { mintApe } from "@/lib/ContractHelpers/mint";
 import { duel } from "@/lib/ContractHelpers/duel";
 import { publicClient } from "@/lib/Client";
+import { updateMatrix } from "@/lib/ContractHelpers/updateMatrix";
 
 export default function Home() {
   return (
@@ -16,8 +17,8 @@ export default function Home() {
         //   "0x09FDa79db5c62e8c7EA7774780124573872812F7"
         // );
         // console.log(balance);
-        const hash = await approveApe("04:3d:5e:22:4f:13:90");
-        console.log(hash);
+        // const hash = await approveApe("04:3d:5e:22:4f:13:90");
+        // console.log(hash);
         // const hash = await mintApe("04:12:68:22:4f:13:90");
 
         // console.log(hash);
@@ -32,6 +33,14 @@ export default function Home() {
         //   hash: hash,
         // });
         // console.log(hash1);
+
+        const hash1 = await updateMatrix("04:12:68:22:4f:13:90", [
+          [20, 76, 30, 10],
+          [23, 54, 34, 21],
+          [22, 56, 34, 53],
+          [23, 54, 34, 21],
+        ]);
+        console.log(hash1);
       }}
     >
       getbalance
