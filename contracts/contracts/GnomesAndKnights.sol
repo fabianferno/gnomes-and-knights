@@ -2,7 +2,6 @@
 pragma solidity >=0.8.13 <0.9.0;
 
 import "fhevm@v0.3.0/lib/TFHE.sol";
-import "hardhat/console.sol";
 
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
