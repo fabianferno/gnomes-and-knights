@@ -45,7 +45,7 @@ function Profile({
       <div className=" -mt-3">
         <p className=" text-center font-semibold font-lg text-black">
           {/* Gnome #1234 */}
-          {type == 0 ? "Gnome" : "Warrior"} #{id}
+          {type == 0 ? "Gnome" : "Warrior"} #{address.slice(0, 7)}
         </p>
         <div className="-my-1 -mb-2 text-black">
           <Healthbar healthprop={auraBalance} />

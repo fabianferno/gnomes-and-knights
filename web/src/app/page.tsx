@@ -170,13 +170,18 @@ export default function Home() {
             gif={"attack2"}
             yes={(opponentaddress: string) => {
               setDuelsign(true);
+              setDuel(true);
+              setconfirmDuelDialog(false);
               duelTx(
                 localStorage.getItem("serialNumber") || "",
                 opponentaddress
               ).then(({ winner_address, hash2 }) => {
-                setHash(hash2.transactionHash);
-                setDuelResults(winner_address);
+                setHash(hash2?.transactionHash || "");
+                setDuelsign(false);
+                setModal(false);
                 setduelComplete(true);
+                setWon(true);
+                setDuelResults(winner_address);
               });
             }}
           >
@@ -411,9 +416,6 @@ export default function Home() {
                     <span className="flex justify-center items-center">
                       <Image src="/logo.png" alt="" width={350} height={179} />
                     </span>
-                  </div>
-                  <div className="font-bold text-zinc-900 text-xl">
-                    Login With WorldCoin
                   </div>
                 </div>
               </div>

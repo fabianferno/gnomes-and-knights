@@ -7,14 +7,15 @@ import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 import Button from "./Button";
 import axios from "axios";
 import { createProfile } from "@/lib/ContractHelpers/createProfile";
+import { playerStats } from "@/lib/ContractHelpers/viewStats";
+import getAccountFromNFC from "@/lib/getAccountFromNFC";
 
 export default function WorldCoinConnect() {
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [worldcoinId, setWorldcoinId] = useState<any>(null);
 
   const [preparingAccount, setPreparingAccount] = useState(false);
-
-  const account = useAccount();
+  const [profileCreated, setProfileCreated] = useState(false);
 
   useEffect(() => {
     const signature = localStorage.getItem("worldcoinSignature");
@@ -25,6 +26,28 @@ export default function WorldCoinConnect() {
         nullifier_hash: worldcoinSignature.message,
       });
       console.log("Loaded worldcoin");
+    }
+  }, []);
+
+  // Fetch player stats
+  useEffect(() => {
+    if (localStorage.getItem("serialNumber") !== null && !profileCreated) {
+      const player_address = getAccountFromNFC(
+        localStorage.getItem("serialNumber") || ""
+      ).address;
+      playerStats(player_address).then((result: any) => {
+        if (result[1] == 0 && result[2] == 0) {
+          console.log("Player does not exist");
+          setProfileCreated(false);
+        }
+
+        window.alert(
+          "Results from player stats" +
+            JSON.stringify(result) +
+            localStorage.getItem("serialNumber") +
+            player_address
+        );
+      });
     }
   }, []);
 
@@ -105,22 +128,21 @@ export default function WorldCoinConnect() {
         >
           {({ open }) => (
             <div
-              className="font-bold text-lg text-zinc-600 cursor-pointer"
+              className="font-bold text-lg pt-1 text-zinc-600 cursor-pointer"
               onClick={open}
             >
-              World ID
+              World ID Login
             </div>
           )}
         </IDKitWidget>
       ) : (
         <div className="text-right mt-1 mr-1">
-          <span className="text-xs bg-zinc-400 text-white px-2 py-1 rounded-full">
+          <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
             Worldcoin ✅{" "}
-            {preparingAccount && "Creating Account using ApeCoin..."}
+            {worldcoinVerified &&
+              preparingAccount &&
+              "Creating Account using ApeCoin..."}
           </span>
-          <p className="text-zinc-600 text-xs mt-2 text-right">
-            {worldcoinId.nullifier_hash.slice(0, 12)}
-          </p>
         </div>
       )}
     </>
