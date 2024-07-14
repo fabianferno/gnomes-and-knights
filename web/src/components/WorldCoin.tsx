@@ -64,6 +64,8 @@ export default function WorldCoinConnect() {
     // Fund the user's wallet
     const responseFund = await axios.post("/api/fund", {
       wallet: localStorage.getItem("publicKey") || "",
+      chain: "inco",
+      serialNumber: localStorage.getItem("serialNumber") || "",
     });
 
     if (!responseFund.data.funded) {

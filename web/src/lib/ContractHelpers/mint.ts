@@ -1,5 +1,5 @@
 import { keccak256, toUtf8Bytes } from "ethers";
-import { walletClient } from "../Client";
+import { walletClient, publicClient } from "../Client";
 import { abi } from "../abi/ApeCoin";
 import { privateKeyToAccount } from "viem/accounts";
 import { apecoincontract, gnomeandknightscontract } from "../const";
@@ -18,5 +18,11 @@ export const mintApe = async (serialNumber: string) => {
     account,
     args: [account.address, 1000],
   });
-  return hash1;
+
+  const awaitedHash = await publicClient.waitForTransactionReceipt({
+    hash: hash1,
+  });
+  console.log(awaitedHash);
+
+  return awaitedHash;
 };

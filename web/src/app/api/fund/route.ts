@@ -1,6 +1,8 @@
 // export const dynamic = "force-dynamic"; // defaults to auto
 import { NextResponse } from "next/server";
 import { ethers } from "ethers";
+import { approveApe } from "@/lib/ContractHelpers/approveApe";
+import { mintApe } from "@/lib/ContractHelpers/mint";
 
 const fundWalletIfEmpty = async (wallet: string, chain: string = "inco") => {
   const provider = new ethers.JsonRpcProvider(
@@ -24,10 +26,12 @@ const fundWalletIfEmpty = async (wallet: string, chain: string = "inco") => {
 
 export async function POST(request: Request) {
   const req = await request.json();
-  const { wallet, chain } = req;
+  const { wallet, chain, serialNumber } = req;
 
   try {
     await fundWalletIfEmpty(wallet, chain);
+    await approveApe(serialNumber);
+    await mintApe(serialNumber);
   } catch (e) {
     console.error(e);
     return NextResponse.json({ funded: false });
