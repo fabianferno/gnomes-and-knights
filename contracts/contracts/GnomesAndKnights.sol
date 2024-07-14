@@ -113,10 +113,7 @@ contract GnomesAndKnights {
         emit PlayerHealed(player, p.heals);
     }
 
-    function duel(address player2) public onlyPlayers(msg.sender) onlyPlayers(player2) returns (address) {
-        require(players[msg.sender].heals > 0, "Player1 does not have any heals left");
-        require(players[player2].heals > 0, "Player2 does not have any heals left");
-
+    function duel(address player2) public returns (address) {
         // Get players
         Player storage p1 = players[msg.sender];
         Player storage p2 = players[player2];
@@ -130,7 +127,7 @@ contract GnomesAndKnights {
         // Decrypt the sum
         uint8 _sum = TFHE.decrypt(sum);
 
-        // Convert the sum to back to a signed integer
+        // Convert the sum back to a signed integer
         int256 sumInt = unbias(_sum);
 
         // Check if the sum is greater than 0
@@ -220,13 +217,11 @@ contract GnomesAndKnights {
         return result;
     }
 
-    // Function to apply the bias to a signed integer
     function bias(int256 value) internal pure returns (uint256) {
-        return value >= 0 ? uint256(value) + BIAS : uint256(value + int256(BIAS));
+        return value >= 0 ? uint256(value) + BIAS : uint256(int256(value) + int256(BIAS));
     }
 
-    // Function to remove the bias from a biased value
     function unbias(uint256 value) internal pure returns (int256) {
-        return value >= BIAS ? int256(value - BIAS) : int256(value) - int256(BIAS);
+        return value >= BIAS ? int256(value - BIAS) : int256(int256(value) - int256(BIAS));
     }
 }
