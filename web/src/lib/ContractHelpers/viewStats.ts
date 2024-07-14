@@ -5,11 +5,11 @@ import { privateKeyToAccount } from "viem/accounts";
 import { apecoincontract, gnomeandknightscontract } from "../const";
 
 export const playerStats = async (address: string) => {
-  const hash = await publicClient.readContract({
+  const data = await publicClient.readContract({
     address: gnomeandknightscontract,
     abi: abi,
     functionName: "players",
     args: [address],
   });
-  return hash;
+  return data;
 };

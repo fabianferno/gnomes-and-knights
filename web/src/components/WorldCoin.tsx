@@ -11,6 +11,7 @@ import { createProfile } from "@/lib/ContractHelpers/createProfile";
 export default function WorldCoinConnect() {
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
   const [worldcoinId, setWorldcoinId] = useState<any>(null);
+
   const [preparingAccount, setPreparingAccount] = useState(false);
 
   const account = useAccount();

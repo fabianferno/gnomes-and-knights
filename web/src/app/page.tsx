@@ -17,16 +17,19 @@ import Toast from "@/components/Toast";
 import { duelTx } from "@/lib/ContractHelpers/duel";
 import { heal } from "@/lib/ContractHelpers/heal";
 import { updateMatrix } from "@/lib/ContractHelpers/updateMatrix";
+import { playerStats } from "@/lib/ContractHelpers/viewStats";
 import { items } from "@/lib/constants";
+import { privateKeyToAccount } from "viem/accounts";
+import { Wallet, keccak256, toUtf8Bytes } from "ethers";
 
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
-  const [loggedin, setLoggedin] = useState(true); //once wallet is created
-  const [start, setStart] = useState(true); //starts the nfc scanner
-  const [worldcoinVerified, setWorldcoinVerified] = useState(true); //should be set to true once worldcoin verification is done
+  const [loggedin, setLoggedin] = useState(false); // once wallet is created
+  const [start, setStart] = useState(false); // starts the nfc scanner
+  const [worldcoinVerified, setWorldcoinVerified] = useState(false); //should be set to true once worldcoin verification is done
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
-  ]); //grid items
+  ]); // grid items
   const [modal, setModal] = useState(false); //item edit modal open close
   const [itemid, setItemid] = useState(6); //item to be edited
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
@@ -41,15 +44,27 @@ export default function Home() {
   const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
   const [showtoast, setShowtoast] = useState(false);
   const [hash, setHash] = useState("");
-  //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
-  const playertype = 0; //o for gnome 1 for warrior
-  const id = 123; //id of the player
-  const health = 490; //aura
-  const hits = 3; //hits
-  const heals = 1; //heals
-  const playeraddress = "0x1234567890"; //player address
-
+  // Declare all states here
+  const [playerType, setPlayerType] = useState(0);
+  const [id, setId] = useState(123);
+  const [health, setHealth] = useState(490);
+  const [hits, setHits] = useState(3);
+  const [heals, setHeals] = useState(1);
+  const [playerAddress, setPlayerAddress] = useState("0x1234567890");
   const [loading, setLoading] = useState(false); //triggers loader at any point
+
+  // Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
+
+  useEffect(() => {
+    const hash = keccak256(
+      toUtf8Bytes(localStorage.getItem("serialNumber") || ("" as any))
+    );
+    const privateKey = "0x" + hash.slice(2, 66);
+    const player_address = privateKeyToAccount(privateKey as any).address;
+    playerStats(player_address).then((result) => {
+      console.log("Results from player stats", result);
+    });
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -64,6 +79,7 @@ export default function Home() {
       }
     })();
   }, [start]);
+
   useEffect(() => {
     if (hash !== "") {
       setShowtoast(true);
@@ -73,6 +89,7 @@ export default function Home() {
       return () => clearTimeout(timer);
     }
   }, [hash]);
+
   useEffect(() => {
     if (localStorage.getItem("serialNumber") !== null && start) {
       setStart(false);
@@ -93,16 +110,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (playeraddress == DuelResults) {
+    if (playerAddress == DuelResults) {
       setWon(true);
     }
   }, [DuelDone]);
+
   return (
     <>
       {showtoast && <Toast hash={hash} />}
       {loading && (
         <div className=" -mt-5">
-          <Loader type={playertype} />
+          <Loader type={playerType} />
         </div>
       )}
       {modal && (
@@ -112,14 +130,14 @@ export default function Home() {
       )}
       {DuelDone && showresults && (
         <div className=" -mt-5">
-          <Result type={playertype} won={won} />
+          <Result type={playerType} won={won} />
         </div>
       )}
       {Duelsign && (
         <div className="-mt-5">
           <Dialog
             close={setDuelConfirmation}
-            type={playertype}
+            type={playerType}
             opponentaddress={opponentaddress}
             gif={"attack1"}
             yes={(opponentaddress: string) => {}}
@@ -133,7 +151,7 @@ export default function Home() {
         <div className=" -mt-5">
           <Dialog
             close={setDuelConfirmation}
-            type={playertype}
+            type={playerType}
             opponentaddress={opponentaddress}
             gif={"attack2"}
             yes={(opponentaddress: string) => {
@@ -156,7 +174,7 @@ export default function Home() {
         <div className=" -mt-5">
           <Dialog
             close={sethealingConfirmation}
-            type={playertype}
+            type={playerType}
             opponentaddress={opponentaddress}
             gif={"idle"}
             yes={(opponentaddress: string) => {
@@ -274,7 +292,7 @@ export default function Home() {
                     <main className="flex flex-col items-center justify-center h-fit">
                       <div className="pt-2 w-full px-12">
                         <Profile
-                          type={playertype}
+                          type={playerType}
                           id={id}
                           health={health}
                           hits={hits}
