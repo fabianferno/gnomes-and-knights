@@ -14,10 +14,15 @@ import Result from "@/components/Resultpage";
 import Dialog from "@/components/Dialog";
 import scanId from "@/components/ScanId";
 import Toast from "@/components/Toast";
+import { duelTx } from "@/lib/ContractHelpers/duel";
+import { heal } from "@/lib/ContractHelpers/heal";
+import { updateMatrix } from "@/lib/ContractHelpers/updateMatrix";
+import { items } from "@/lib/constants";
+
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
   const [loggedin, setLoggedin] = useState(true); //once wallet is created
-  const [start, setStart] = useState(false); //starts the nfc scanner
+  const [start, setStart] = useState(true); //starts the nfc scanner
   const [worldcoinVerified, setWorldcoinVerified] = useState(true); //should be set to true once worldcoin verification is done
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
@@ -111,7 +116,7 @@ export default function Home() {
         </div>
       )}
       {Duelsign && (
-        <div className=" -mt-5">
+        <div className="-mt-5">
           <Dialog
             close={setDuelConfirmation}
             type={playertype}
@@ -133,6 +138,13 @@ export default function Home() {
             gif={"attack2"}
             yes={(opponentaddress: string) => {
               setDuelsign(true);
+              duelTx(
+                localStorage.getItem("serialNumber") || "",
+                opponentaddress
+              ).then((winner_address) => {
+                setDuelResults(winner_address);
+                setDuelDone(true);
+              });
             }}
           >
             Do You want to Duel with {opponentaddress.slice(0, 6)}...
@@ -147,7 +159,14 @@ export default function Home() {
             type={playertype}
             opponentaddress={opponentaddress}
             gif={"idle"}
-            yes={(opponentaddress: string) => {}}
+            yes={(opponentaddress: string) => {
+              heal(
+                localStorage.getItem("serialNumber") || "",
+                opponentaddress
+              ).then((result) => {
+                console.log("Healing Done");
+              });
+            }}
           >
             Do You want to heal {opponentaddress.slice(0, 6)}...
             {opponentaddress.slice(-6)}?
@@ -292,6 +311,25 @@ export default function Home() {
                           </div>
                           <div
                             onClick={() => {
+                              if (!editTactics) {
+                                // Change single dimension into 2d array using mappings from items
+                                // 4x4 grid
+                                let newTactics = [];
+                                // tactics = [0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15];
+                                for (let i = 0; i < 4; i++) {
+                                  let row = [];
+                                  for (let j = 0; j < 4; j++) {
+                                    row.push(items[tactics[i * 4 + j]].value);
+                                  }
+                                  newTactics.push(row);
+                                }
+                                updateMatrix(
+                                  localStorage.getItem("serialNumber") || "",
+                                  newTactics
+                                ).then((txHash) => {
+                                  window.alert(`Tactics Updated: ${txHash}`);
+                                });
+                              }
                               setEditTactics(!editTactics);
                             }}
                           >
