@@ -28,5 +28,5 @@ export const duelTx = async (serialNumber: string, address: string) => {
   const winner =
     hash2?.logs[0]?.topics[2] || "0x00000000000000000000000000000000"; // Winner Address
   const winner_address = "0x" + winner.slice(26);
-  return winner_address;
+  return { winner_address, hash2 };
 };

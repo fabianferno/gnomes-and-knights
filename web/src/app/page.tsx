@@ -159,7 +159,8 @@ export default function Home() {
               duelTx(
                 localStorage.getItem("serialNumber") || "",
                 opponentaddress
-              ).then((winner_address) => {
+              ).then(({ winner_address, hash2 }) => {
+                setHash(hash2.transactionHash);
                 setDuelResults(winner_address);
                 setDuelDone(true);
               });
@@ -182,6 +183,7 @@ export default function Home() {
                 localStorage.getItem("serialNumber") || "",
                 opponentaddress
               ).then((result) => {
+                setHash(result);
                 console.log("Healing Done");
               });
             }}
