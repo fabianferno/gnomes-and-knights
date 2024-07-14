@@ -114,12 +114,12 @@ contract GnomesAndKnights {
         emit PlayerHealed(player, p.heals);
     }
 
-    function duel(address player1, address player2) public onlyPlayers(player1) onlyPlayers(player2) returns (address) {
-        require(players[player1].heals > 0, "Player1 does not have any heals left");
+    function duel(address player2) public onlyPlayers(msg.sender) onlyPlayers(player2) returns (address) {
+        require(players[msg.sender].heals > 0, "Player1 does not have any heals left");
         require(players[player2].heals > 0, "Player2 does not have any heals left");
 
         // Get players
-        Player storage p1 = players[player1];
+        Player storage p1 = players[msg.sender];
         Player storage p2 = players[player2];
 
         // Add two matrices
@@ -141,29 +141,29 @@ contract GnomesAndKnights {
             p2.hits--;
 
             // Transfer aura from player 2 to player 1
-            apecoin.transferFrom(player2, player1, 100);
+            apecoin.transferFrom(player2, msg.sender, 100);
         } else {
             // Player 2 wins
             p2.hits++;
             p1.hits--;
 
             // Transfer aura from player 1 to player 2
-            apecoin.transferFrom(player1, player2, 100);
+            apecoin.transferFrom(msg.sender, player2, 100);
         }
 
         // Update the states
         p1.heals--;
         p2.heals--;
 
-        players[player1] = p1;
+        players[msg.sender] = p1;
         players[player2] = p2;
 
         // Emit the event
-        emit Duel(player1, player2, sumInt > 0 ? player1 : player2);
+        emit Duel(msg.sender, player2, sumInt > 0 ? msg.sender : player2);
 
         // Update the hits
-        emit UpdateHits(player1, p1.hits);
-        return sumInt > 0 ? player1 : player2;
+        emit UpdateHits(msg.sender, p1.hits);
+        return sumInt > 0 ? msg.sender : player2;
     }
 
     // Edit the player grid
@@ -198,7 +198,6 @@ contract GnomesAndKnights {
 
     function sumOfAllElementsInAMatrix(euint8[BOARD_SIZE][BOARD_SIZE] memory matrix) public pure returns (euint8) {
         // Find sum of all elements in a matrix
-        euint8[BOARD_SIZE][BOARD_SIZE] memory _matrix;
         euint8 sum = TFHE.asEuint8(0);
         for (uint8 i = 0; i < BOARD_SIZE; i++) {
             for (uint8 j = 0; j < BOARD_SIZE; j++) {
