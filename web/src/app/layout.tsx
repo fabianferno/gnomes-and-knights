@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Patrick_Hand } from "next/font/google";
+import { Patrick_Hand } from "next/font/google";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import Providers from "@/components/Providers";
@@ -27,19 +27,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// {
-/* <html lang="en">
-      <DynamicProvider>
-        <Providers>
-          <DynamicWagmiConnector>
-      <body
-        className={`${inter.className} bg-[url('/assets/ui/clouds.png')] md:bg-contain backdrop-blur-[1px]`}
-      >
-        {children}  
-      </body>
-      </DynamicWagmiConnector>
-        </Providers>
-      </DynamicProvider>
-    </html> */
-// }

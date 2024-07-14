@@ -89,8 +89,7 @@ export const onBoard = async ({
   ndef
     .scan()
     .then(() => {
-      console.log("Scan started successfully.");
-      window.alert("Scan started successfully.");
+      window.alert("Scanning for NFCs... place your tag on device");
       ndef.onreadingerror = (event) => {
         console.log(
           "Error! Cannot read data from the NFC tag. Try a different one?"

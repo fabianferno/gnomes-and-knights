@@ -1,7 +1,7 @@
 "use client";
 import Grid from "@/components/Grid";
 import Image from "next/image";
-import WorldCoinConnect from "@/components/WorldCoin";
+import WorldCoinConnect from "@/components/WorldCoinConnect";
 import Profile from "@/components/Profile";
 import Button from "@/components/Button";
 import Button2 from "@/components/Button2";
@@ -21,6 +21,7 @@ import { playerStats } from "@/lib/ContractHelpers/viewStats";
 import { items } from "@/lib/constants";
 import { privateKeyToAccount } from "viem/accounts";
 import { Wallet, keccak256, toUtf8Bytes } from "ethers";
+import getAccountFromNFC from "@/lib/getAccountFromNFC";
 
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
@@ -34,52 +35,83 @@ export default function Home() {
   const [itemid, setItemid] = useState(6); //item to be edited
   const [editTactics, setEditTactics] = useState(false); //for editing the grid
   const [duel, setDuel] = useState(false); //for duel page
-  const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
-  const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
-  const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
+  const [duelComplete, setduelComplete] = useState(false); //should be ture once the result is received
+  const [confirmDuelDialog, setconfirmDuelDialog] = useState(false); //triggers duel modal
+  const [confirmHealDialog, setconfirmHealDialog] = useState(false); // triggers heal modal
+  const [DuelResults, setDuelResults] = useState("0"); //set duel winner address here
   const [Duelsign, setDuelsign] = useState(false); //triggers duel sign modal
-  const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
-  const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
+  const [opponentaddress, setOpponentaddress] = useState("0");
   const [showtoast, setShowtoast] = useState(false);
   const [hash, setHash] = useState("");
   // Declare all states here
   const [playerType, setPlayerType] = useState(0);
-  const [id, setId] = useState(123);
-  const [health, setHealth] = useState(490);
-  const [hits, setHits] = useState(3);
-  const [heals, setHeals] = useState(1);
+  const [playerId, setplayerId] = useState(123);
   const [playerAddress, setPlayerAddress] = useState("0x1234567890");
+  const [playerHits, setplayerHits] = useState(3);
+  const [playerHeals, setplayerHeals] = useState(1);
   const [loading, setLoading] = useState(false); //triggers loader at any point
 
-  // Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
-
+  // Fetch player stats
   useEffect(() => {
-    const hash = keccak256(
-      toUtf8Bytes(localStorage.getItem("serialNumber") || ("" as any))
-    );
-    const privateKey = "0x" + hash.slice(2, 66);
-    const player_address = privateKeyToAccount(privateKey as any).address;
-    playerStats(player_address).then((result) => {
-      console.log("Results from player stats", result);
-    });
+    if (localStorage.getItem("serialNumber") !== null) {
+      const player_address = getAccountFromNFC(
+        localStorage.getItem("serialNumber") || ""
+      ).address;
+      playerStats(player_address).then((result: any) => {
+        setplayerHeals(result[2]);
+        setplayerHits(result[1]);
+        setPlayerAddress(player_address);
+        setPlayerType(result[1] == false ? 0 : 1);
+        setplayerId(result[4]);
+        console.log(
+          "Results from player stats" +
+            JSON.stringify(result) +
+            localStorage.getItem("serialNumber") +
+            player_address
+        );
+
+        // Get a random number using the result as a string
+        const random = Math.floor(Math.random() * result[3]);
+
+        // Set the tactics to the random number from 1 to 16
+        const arrangements = [
+          random % 16,
+          (random + 1) % 16,
+          (random + 2) % 16,
+          0,
+          (random + 4) % 16,
+          (random + 5) % 16,
+          (random + 6) % 16,
+          (random + 7) % 16,
+          (random + 8) % 16,
+          (random + 9) % 16,
+          0,
+          (random + 11) % 16,
+          0,
+          (random + 13) % 16,
+          (random + 14) % 16,
+          0,
+        ];
+
+        setTactics(arrangements);
+      });
+    }
   }, []);
 
+  // Scan NFC
   useEffect(() => {
     (async () => {
       if (start) {
         setScanning(false);
         console.log("Scanning NFC");
-        // window.alert(Scanning NFC: ${start});
-        // onBoard().then(() => {
-        //   setLoggedin(true);
-        // });
         await onBoard({ setLoggedin, setStart });
       }
     })();
   }, [start]);
 
+  // To show the toast
   useEffect(() => {
     if (hash !== "") {
       setShowtoast(true);
@@ -93,19 +125,15 @@ export default function Home() {
   useEffect(() => {
     if (localStorage.getItem("serialNumber") !== null && start) {
       setStart(false);
-
-      // setScanning(false);
       setLoggedin(true);
     }
   }, []);
 
+  // Check if the user has a verified worldcoin proof
   useEffect(() => {
     const signature = localStorage.getItem("worldcoinSignature");
     if (signature) {
       setWorldcoinVerified(true);
-      const worldcoinSignature = JSON.parse(signature);
-
-      console.log("Loaded worldcoin");
     }
   }, []);
 
@@ -113,7 +141,7 @@ export default function Home() {
     if (playerAddress == DuelResults) {
       setWon(true);
     }
-  }, [DuelDone]);
+  }, [duelComplete]);
 
   return (
     <>
@@ -128,29 +156,15 @@ export default function Home() {
           <Modal itemid={itemid} closemodal={setModal} />
         </div>
       )}
-      {DuelDone && showresults && (
+      {duelComplete && showresults && (
         <div className=" -mt-5">
           <Result type={playerType} won={won} />
         </div>
       )}
-      {Duelsign && (
+      {confirmDuelDialog && (
         <div className="-mt-5">
           <Dialog
-            close={setDuelConfirmation}
-            type={playerType}
-            opponentaddress={opponentaddress}
-            gif={"attack1"}
-            yes={(opponentaddress: string) => {}}
-            hidden={true}
-          >
-            Tap NFC Tag to Sign Transaction
-          </Dialog>
-        </div>
-      )}
-      {DuelConfirmation && (
-        <div className=" -mt-5">
-          <Dialog
-            close={setDuelConfirmation}
+            close={setconfirmDuelDialog}
             type={playerType}
             opponentaddress={opponentaddress}
             gif={"attack2"}
@@ -162,19 +176,22 @@ export default function Home() {
               ).then(({ winner_address, hash2 }) => {
                 setHash(hash2.transactionHash);
                 setDuelResults(winner_address);
-                setDuelDone(true);
+                setduelComplete(true);
               });
             }}
           >
-            Do You want to Duel with {opponentaddress.slice(0, 6)}...
-            {opponentaddress.slice(-6)}?
+            Do You want to Duel with{" "}
+            {opponentaddress == "0"
+              ? "ANON"
+              : opponentaddress.slice(0, 6) + "..." + opponentaddress.slice(-6)}
+            ?
           </Dialog>
         </div>
       )}
-      {healingConfirmation && (
+      {confirmHealDialog && (
         <div className=" -mt-5">
           <Dialog
-            close={sethealingConfirmation}
+            close={setconfirmHealDialog}
             type={playerType}
             opponentaddress={opponentaddress}
             gif={"idle"}
@@ -188,8 +205,11 @@ export default function Home() {
               });
             }}
           >
-            Do You want to heal {opponentaddress.slice(0, 6)}...
-            {opponentaddress.slice(-6)}?
+            Do You want to heal{" "}
+            {opponentaddress == "0"
+              ? "ANON"
+              : opponentaddress.slice(0, 6) + "..." + opponentaddress.slice(-6)}
+            ?
           </Dialog>
         </div>
       )}
@@ -273,11 +293,11 @@ export default function Home() {
                     <div
                       className="text-black text-2xl font-extrabold -mt-14"
                       onClick={() => {
-                        DuelDone && setShowresults(!showresults);
+                        duelComplete && setShowresults(!showresults);
                       }}
                     >
-                      <Button disabled={!DuelDone}>
-                        {!DuelDone ? (
+                      <Button disabled={!duelComplete}>
+                        {!duelComplete ? (
                           <p className="pt-2">Duel Underway</p>
                         ) : (
                           <p className="pt-2">View Results</p>
@@ -295,10 +315,10 @@ export default function Home() {
                       <div className="pt-2 w-full px-12">
                         <Profile
                           type={playerType}
-                          id={id}
-                          health={health}
-                          hits={hits}
-                          heals={heals}
+                          id={playerId}
+                          address={playerAddress}
+                          hits={playerHits}
+                          heals={playerHeals}
                         />
                       </div>
                       <div className="w-96 ">
@@ -318,7 +338,7 @@ export default function Home() {
                             onClick={async () => {
                               setLoading(!loading);
                               await scanId({ setOpponentaddress }).then(() => {
-                                setDuelConfirmation(true);
+                                setconfirmDuelDialog(true);
                                 setLoading(false);
                               });
                             }}
@@ -365,7 +385,7 @@ export default function Home() {
                             onClick={async () => {
                               setLoading(!loading);
                               await scanId({ setOpponentaddress }).then(() => {
-                                sethealingConfirmation(true);
+                                setconfirmHealDialog(true);
                                 setLoading(false);
                               });
                             }}
@@ -471,18 +491,9 @@ export default function Home() {
                     >
                       <Button disabled={false}>
                         <p className="  text-4xl text-black  font-bold  ">
-                          {" "}
                           Scan NFC
                         </p>
                       </Button>
-                      {/* <div className="">
-                        <Image
-                          src="/assets/ui/nfcloading.gif"
-                          alt=""
-                          width={80}
-                          height={80}
-                        />
-                      </div> */}
                     </div>
                   </div>
                 </div>
