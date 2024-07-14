@@ -13,10 +13,11 @@ import { onBoard } from "@/components/CreateProfile";
 import Result from "@/components/Resultpage";
 import Dialog from "@/components/Dialog";
 import scanId from "@/components/ScanId";
+import Toast from "@/components/Toast";
 export default function Home() {
   const [scanning, setScanning] = useState(false); // just to trigger the scanning page
   const [loggedin, setLoggedin] = useState(true); //once wallet is created
-  const [start, setStart] = useState(true); //starts the nfc scanner
+  const [start, setStart] = useState(false); //starts the nfc scanner
   const [worldcoinVerified, setWorldcoinVerified] = useState(true); //should be set to true once worldcoin verification is done
   const [tactics, setTactics] = useState([
     0, 13, 5, 0, 3, 2, 1, 11, 6, 7, 0, 10, 5, 4, 0, 15,
@@ -28,11 +29,13 @@ export default function Home() {
   const [DuelDone, setDuelDone] = useState(false); //should be ture once the result is received
   const [DuelConfirmation, setDuelConfirmation] = useState(false); //triggers duel modal
   const [DuelResults, setDuelResults] = useState("0x1234567890"); //set duel winner address here
-  const [Duelsign, setDuelsign] = useState(true); //triggers duel sign modal
+  const [Duelsign, setDuelsign] = useState(false); //triggers duel sign modal
   const [healingConfirmation, sethealingConfirmation] = useState(false); // triggers heal modal
   const [showresults, setShowresults] = useState(false); //after results is loaded its true when the user clicks show results button
   const [won, setWon] = useState(false);
   const [opponentaddress, setOpponentaddress] = useState("0x1234567890");
+  const [showtoast, setShowtoast] = useState(false);
+  const [hash, setHash] = useState("");
   //Type 0 is Gnome, Type 1 is Warrior,id is the uniqe id,health max 1000,hits max 5,heals max 2
   const playertype = 0; //o for gnome 1 for warrior
   const id = 123; //id of the player
@@ -56,7 +59,15 @@ export default function Home() {
       }
     })();
   }, [start]);
-
+  useEffect(() => {
+    if (hash !== "") {
+      setShowtoast(true);
+      const timer = setTimeout(() => {
+        setShowtoast(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [hash]);
   useEffect(() => {
     if (localStorage.getItem("serialNumber") !== null && start) {
       setStart(false);
@@ -83,6 +94,7 @@ export default function Home() {
   }, [DuelDone]);
   return (
     <>
+      {showtoast && <Toast hash={hash} />}
       {loading && (
         <div className=" -mt-5">
           <Loader type={playertype} />
