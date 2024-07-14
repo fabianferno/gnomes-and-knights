@@ -3,6 +3,6 @@ export const gnomeandknightscontract =
 export const apecoincontract = "0x5fd5F6940cDC56FB0a1236FFBeB43117B9B379C0";
 
 const gnomeandknightscontractFHenix =
-  "0x758C68fe6a5ABd67E10625ac988D9A38A36f8A61";
+  "0xD76AeD12cd09D86f2E95C9c40115d77354D54dE1";
 export const apecoincontractFhenix =
-  "0x5879010a206Efe58a2dDe4f44dD5C731E0aFb999";
+  "0x11f71859d8f91FDA867c63d3B395f7B0434e3fAD";
